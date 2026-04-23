@@ -130,6 +130,96 @@ tbody tr:last-child td{border-bottom:none}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ── MOBILE ─────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* Allow page to scroll naturally on mobile */
+  html, body { overflow-y: auto; overflow-x: hidden; height: auto; }
+  .app { height: auto; min-height: 100dvh; }
+  .content { position: static; overflow: visible; height: auto; }
+  .page { position: static; inset: auto; }
+
+  /* ── Header ── */
+  .header { height: auto; padding: 10px 14px; flex-wrap: wrap; gap: 6px; position: sticky; top: 0; z-index: 50; }
+  .logo { margin-right: auto; }
+  .logo-sub { display: none; }
+  .badge-count { display: none; }
+  .clock { display: none; }
+  .header-right { display: none; }
+  .nav { order: 2; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 2px; scrollbar-width: none; gap: 1px; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-tab { padding: 7px 13px; font-size: 12px; flex-shrink: 0; }
+
+  /* ── Stats ── */
+  .stats-grid { grid-template-columns: repeat(3, 1fr); }
+  .stat-card { padding: 11px 12px; }
+  .stat-val { font-size: 16px; }
+  .stat-label { font-size: 9px; }
+  .stat-chg { font-size: 10px; }
+
+  /* ── Market chart ── */
+  .chart-controls { flex-direction: column; align-items: flex-start; gap: 8px; padding: 10px 14px; }
+  .chart-legend { display: none; }
+  .chart-wrap { height: 280px; flex: none; padding: 0 12px 12px; }
+
+  /* ── Page header ── */
+  .page-top { padding: 14px 14px 0; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .page-title { font-size: 15px; }
+  .page-sub { font-size: 11px; }
+  .table-controls { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+
+  /* ── Pill groups ── */
+  .pill-group { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex-wrap: nowrap; padding-bottom: 2px; }
+  .pill-group::-webkit-scrollbar { display: none; }
+  .pill { white-space: nowrap; flex-shrink: 0; padding: 6px 12px; font-size: 12px; min-height: 34px; display: flex; align-items: center; }
+
+  /* ── Sub-tabs ── */
+  .sub-tabs { padding: 0 14px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  .sub-tabs::-webkit-scrollbar { display: none; }
+  .sub-tab { white-space: nowrap; flex-shrink: 0; padding: 9px 12px; font-size: 12px; }
+
+  /* ── Tables ── */
+  .tbl-wrap { padding: 0 0 24px; }
+  table { font-size: 11.5px; min-width: 640px; }
+  td, th { padding: 9px 10px; }
+  .col-sub { display: none; }
+
+  /* ── Euro chart section ── */
+  .euro-chart-section { padding: 10px 14px 8px; min-height: 0; }
+  .euro-chart-wrap { height: 260px; flex: none; }
+  .euro-footnote { font-size: 9px; }
+
+  /* ── Modal — bottom sheet on mobile ── */
+  .modal-backdrop { align-items: flex-end; }
+  .modal {
+    border-radius: 20px 20px 0 0;
+    max-width: 100%;
+    width: 100%;
+    max-height: 88vh;
+    padding: 24px 20px 32px;
+    position: relative;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+  }
+  .modal::before {
+    content: '';
+    display: block;
+    width: 40px; height: 4px;
+    background: var(--border2);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+  .modal-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .modal-amount { font-size: 26px; }
+  .modal-entity { font-size: 18px; }
+}
+
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .modal-grid { grid-template-columns: 1fr; }
+  .stat-val { font-size: 15px; }
+}
 </style>
 </head>
 <body>
