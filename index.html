@@ -231,6 +231,7 @@ tbody tr:last-child td{border-bottom:none}
       <button class="nav-tab" data-page="franchise">Franchise Deals</button>
       <button class="nav-tab" data-page="euro">Euro Football</button>
       <button class="nav-tab" data-page="media">Media Rights</button>
+      <button class="nav-tab" data-page="token">Tokenisation</button>
     </nav>
     <div class="header-right">
       <span class="badge-count" id="deal-count">-- deals</span>
@@ -426,6 +427,39 @@ tbody tr:last-child td{border-bottom:none}
       </div>
     </div>
 
+    <!-- ══ TOKENISATION ══ -->
+    <div class="page" id="page-token">
+      <div class="page-top">
+        <div>
+          <div class="page-title">Sports Tokenisation</div>
+          <div class="page-sub">Athlete contract tokenization, prize money, NIL, and blockchain-native sports finance. Click any row for full deep-dive.</div>
+        </div>
+        <div class="pill-group" id="token-filter">
+          <button class="pill active" onclick="setTokenFilter('all',this)">All</button>
+          <button class="pill" onclick="setTokenFilter('athlete',this)">Athlete</button>
+          <button class="pill" onclick="setTokenFilter('nil',this)">NIL</button>
+          <button class="pill" onclick="setTokenFilter('platform',this)">Platform</button>
+        </div>
+      </div>
+      <div class="tbl-wrap" style="padding-top:12px">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:90px">Date</th>
+              <th style="width:160px">Entity</th>
+              <th>Category</th>
+              <th>Structure</th>
+              <th style="text-align:right">Scale</th>
+              <th>Sport</th>
+              <th>Status</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody id="token-body"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -506,13 +540,117 @@ const mediaDeals = [
   {id:'m9',year:2022,sport:'football',entity:'Serie A',league:'Serie A',investor:'DAZN / Sky Italy',type:'Broadcast License',typeBadge:'b-broadcast',value:'€900M/yr',duration:'3 yrs (2021-2024)',status:'Expired',statusBadge:'b-proposed',source:'https://www.footitalia.com/news/serie-a-tv-rights-stake/',notes:'DAZN acquires 7 of 10 match packages. DAZN significantly underperformed subscriber targets, creating renegotiation pressure mid-contract. Illustrates streaming rights overvaluation risk.'},
 ];
 
+const tokenDeals = [
+  {
+    id:'t1', date:'2019–2020', year:2019,
+    entity:'Spencer Dinwiddie', category:'Athlete Contract Tokenization',
+    catFilter:'athlete', catBadge:'b-amber',
+    structure:'Flat bond, $150K/token, 4.95% monthly yield, accredited only',
+    scale:'$1.35M raised', target:'$13.5M target', pct:'10% of target',
+    sport:'NBA / Basketball',
+    status:'Pivoted', statusBadge:'b-failed',
+    verdict:'No retail access + no secondary market = structural failure before launch.',
+    source:'https://www.coindesk.com/business/2020/01/29/nba-star-spencer-dinwiddie-launches-tokenized-contract-investment-but-not-as-originally-planned/',
+    summary:'Tokenized $13.5M of his NBA contract as a flat bond at $150K per token. Raised $1.35M — 10% of target. Pivoted to Calaxy after COVID and structural issues.',
+    bullets:[
+      'Tokenized $13.5M NBA contract at $150K/token, 4.95% monthly interest, accredited investors only. Raised $1.35M — 10% of target.',
+      'The NBA blocked the original structure over a profit-sharing opt-out clause. Dinwiddie removed it, killed the upside, and proceeded with a neutered product.',
+      'COVID destroyed his committed investor pool. The 8 investors who stayed were crypto believers, not the diversified capital he needed.',
+      'The $150K minimum and accredited-only gate were fatal to distribution. No retail. No secondary market. No price discovery. Structurally broken before launch.',
+      'Never did a second issuance. Pivoted to building Calaxy, an influencer monetization platform.',
+    ],
+    lesson:'The legal structure is solvable. The CBA is navigable. The product design killed it. You need retail access and a secondary market or the whole thing dies quietly.'
+  },
+  {
+    id:'t2', date:'2022–present', year:2022,
+    entity:'FANtium', category:'Prize Money Tokenization',
+    catFilter:'athlete', catBadge:'b-blue',
+    structure:'Athletes list % of future prize money as NFTs; investors receive pro-rata distributions; resale via OpenSea',
+    scale:'$450K raised for athletes', target:'$120K paid back to date', pct:'12K users, 10+ athletes',
+    sport:'Tennis (primary)',
+    status:'Live — Small Scale', statusBadge:'b-majority',
+    verdict:'Prize-money-only model works legally. Unit economics require 10-20x scale to matter.',
+    source:'https://fantium.com',
+    summary:'Swiss platform tokenizing athlete prize money only, not sponsorships. Founded 2022, raised €2M angel. $450K raised for athletes, $120K paid back. 3 years in, 12K users.',
+    bullets:[
+      'Swiss platform. Tokenizes athlete prize money only — not sponsorships. Athletes list a percentage of future earnings as NFTs; investors buy in, receive pro-rata prize distributions, and can resell on OpenSea.',
+      'Founded 2022, raised €2M angel. Backed by the Sandbox co-founder, former DFL CEO, and a former German international footballer — strong European football network for future expansion.',
+      '3 years in: $450K raised for athletes, $120K paid back, 10+ athletes, 12K users. Small but real.',
+      'Deliberately excludes sponsorship revenue — the right call. Prize money is contractual, predictable, and requires no third-party consent to tokenize.',
+      'Took 24 months to hit $1M in facilitated financing. Take rate and burn rate are undisclosed. Almost certainly not profitable at current scale.',
+      'The Roger Federer page on their site is ambiguous — unclear whether it is a live offering or a branding placeholder. That distinction matters.',
+    ],
+    lesson:'The prize-money-only model works and survives legal scrutiny. The unit economics require scale to matter. Tennis is the right starting sport (individual, transparent earnings, global fan base) but the TAM is too small to build a standalone business.'
+  },
+  {
+    id:'t3', date:'2025–H2 2026', year:2025,
+    entity:'Datavault AI (DVLT)', category:'NIL Tokenization Platform',
+    catFilter:'nil', catBadge:'b-blue',
+    structure:'NIL digital asset exchange via Sports Illustrated partnership; commercial launch H2 2026',
+    scale:'$750M Q1 2026 contracts claimed', target:'$30M rev guidance 2025 / $200M 2026', pct:'Not yet live',
+    sport:'US College (NIL)',
+    status:'Pre-Launch', statusBadge:'b-partial',
+    verdict:'$750M in claimed contracts but not yet live; undisclosed $150M strategic investor is a red flag.',
+    source:'https://www.datavaultai.com',
+    summary:'NASDAQ-listed company (DVLT) partnered with Sports Illustrated to build a NIL digital asset exchange. Claimed $750M in Q1 2026 tokenization contracts. Commercial launch H2 2026. Not yet live.',
+    bullets:[
+      'U.S. collegiate NIL market: $1.67B in 2024-25, growing at 27% per year, projected $2.55B by 2026. No dominant tokenization platform exists.',
+      'Datavault AI (NASDAQ: DVLT) partnered with Sports Illustrated to build a NIL digital asset exchange. Commercial launch targeted H2 2026. Not live.',
+      'Announced $750M in Q1 2026 tokenization contracts and $77M in associated fees — but this spans mining, IP licensing, and advertising inventory, not just sports NIL.',
+      'Revenue guidance: $30M for 2025, $200M for 2026. Self-reported. Audited financials not yet available for 2026 targets. The 6x growth claim warrants scrutiny.',
+      'The $150M strategic investor behind their supercomputing buildout is undisclosed. That is a red flag on a public company.',
+    ],
+    lesson:'The NIL pool is large and structurally underserved. The legal framework post-2021 NCAA settlement is clear enough to build on. The gap is a platform that standardizes NIL contracts, creates a secondary market, and signs enough athletes for network effects. Nobody has done it yet.'
+  },
+  {
+    id:'t4', date:'2025–present', year:2025,
+    entity:'NILX', category:'NIL Tokenization Platform',
+    catFilter:'nil', catBadge:'b-blue',
+    structure:'Early-stage NIL tokenization platform; no disclosed deal flow',
+    scale:'No disclosed metrics', target:'No athlete roster listed', pct:'Pre-revenue',
+    sport:'US College (NIL)',
+    status:'Very Early', statusBadge:'b-proposed',
+    verdict:'Solving a real problem with zero execution evidence to date.',
+    source:null,
+    summary:'Earlier and thinner than Datavault. No disclosed funding, no athlete roster, no metrics. Solving a real problem in a large market but no proof of execution.',
+    bullets:[
+      'Earlier and thinner than Datavault — no disclosed funding, no athlete roster, no metrics published.',
+      'Solving a structurally real problem: the $1.67B NIL market lacks a standardized tokenization layer.',
+      'Post-2021 NCAA settlement gives a clear enough legal framework to build on.',
+      'The gap is a platform that can standardize NIL contracts, create a secondary market, and sign enough athletes to generate network effects.',
+      'No execution evidence. Structurally promising, operationally unproven.',
+    ],
+    lesson:'The category is right. The platform has produced nothing verifiable yet. Watch for a named athlete signing or disclosed institutional backing before assigning any weight.'
+  },
+  {
+    id:'t5', date:'April 2026', year:2026,
+    entity:'Novarra BBX', category:'Sports Tokenization Framework',
+    catFilter:'platform', catBadge:'b-failed',
+    structure:'Convertible debenture capital raise; framework-only sports tokenization announcement April 21, 2026',
+    scale:'No closed deals', target:'18-22 staff planned over 12 months', pct:'No named clients',
+    sport:'Multi-sport (claimed)',
+    status:'Press Release Only', statusBadge:'b-failed',
+    verdict:'Zero disclosed closed transactions across all announcements. Not a competitive factor.',
+    source:null,
+    summary:'April 21, 2026 sports tokenization announcement included no named athlete, no named club, no signed deal, no disclosed deal size. Pattern: framework announcements masking an early-stage capital raise.',
+    bullets:[
+      'No disclosed external funding. Capital strategy is a convertible debenture program — they are raising, not deploying.',
+      'CEO Robert Di Marco claims 35 years in investment banking. No independent verification available.',
+      'Sports tokenization announcement (April 21, 2026): no named athlete, no named club, no signed deal, no disclosed deal size. A framework announcement.',
+      'Same pattern across all recent press releases: $1B gold tokenization framework with Happy Gold, CFTC pilot applause, platform expansion — all announcements, zero disclosed closed transactions.',
+      'Plans to hire 18-22 staff over 12 months. That is a startup building toward a product, not an operator with live deal flow.',
+    ],
+    lesson:'Press release velocity masking an early-stage capital raise. Not a competitive factor until they show a named client and a closed transaction.'
+  },
+];
+
 // ── STATE ────────────────────────────────────────────────────────────────────
-let chartFilter='all', franchiseFilter='all', mediaFilter='all', euroTab='index';
+let chartFilter='all', franchiseFilter='all', mediaFilter='all', euroTab='index', tokenFilter='all';
 let mainChart=null, euroChart=null;
 let franchiseSort={col:'year',dir:-1};
 
 // ── DEAL COUNT ───────────────────────────────────────────────────────────────
-const totalDeals = franchiseDeals.length + euroDeals.length + mediaDeals.length;
+const totalDeals = franchiseDeals.length + euroDeals.length + mediaDeals.length + tokenDeals.length;
 document.getElementById('deal-count').textContent = totalDeals + ' deals tracked';
 
 // ── NAV ──────────────────────────────────────────────────────────────────────
@@ -758,6 +896,61 @@ function setMediaFilter(f,btn){
   renderMediaTable(f);
 }
 
+// ── TOKEN TABLE ──────────────────────────────────────────────────────────────
+function renderTokenTable(){
+  const data = tokenDeals.filter(d => tokenFilter==='all' || d.catFilter===tokenFilter);
+  document.getElementById('token-body').innerHTML = data.map(d => `
+    <tr onclick="openTokenModal(tokenDeals.find(x=>x.id==='${d.id}'))">
+      <td class="col-dim" style="white-space:nowrap">${d.date}</td>
+      <td><div class="col-name">${d.entity}</div></td>
+      <td><span class="badge ${d.catBadge}">${d.category}</span></td>
+      <td class="col-dim" style="font-size:11.5px;max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.structure}</td>
+      <td style="text-align:right"><div class="col-num" style="font-size:12px">${d.scale}</div><div style="font-size:10px;color:var(--text3);margin-top:2px">${d.pct}</div></td>
+      <td class="col-dim" style="white-space:nowrap">${d.sport}</td>
+      <td><span class="badge ${d.statusBadge}">${d.status}</span></td>
+      <td style="font-size:11px;color:var(--text2);max-width:260px">${d.verdict}</td>
+    </tr>`).join('');
+}
+function setTokenFilter(f,btn){
+  tokenFilter=f;
+  document.querySelectorAll('#token-filter .pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderTokenTable();
+}
+function openTokenModal(d){
+  if(!d) return;
+  const bullets = d.bullets.map(b=>`
+    <div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <span style="color:var(--amber);flex-shrink:0;margin-top:1px">›</span>
+      <span style="font-size:12px;color:var(--text2);line-height:1.6">${b}</span>
+    </div>`).join('');
+  const sourceHtml = d.source
+    ? `<div class="modal-source"><a href="${d.source}" target="_blank" rel="noopener">View source ↗</a></div>`
+    : '';
+  openModal(`
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px">
+      <div class="modal-entity">${d.entity}</div>
+      <span class="badge ${d.statusBadge}" style="flex-shrink:0;margin-top:4px">${d.status}</span>
+    </div>
+    <div class="modal-badges">
+      <span class="badge ${d.catBadge}">${d.category}</span>
+      <span class="badge b-proposed">${d.sport}</span>
+      <span class="badge b-proposed">${d.date}</span>
+    </div>
+    <div style="background:var(--panel);border-radius:8px;padding:14px 16px;margin-bottom:16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:6px">Summary</div>
+      <div style="font-size:13px;color:var(--text);line-height:1.6">${d.summary}</div>
+    </div>
+    <div style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:4px">Key Facts</div>
+    <div style="margin-bottom:16px">${bullets}</div>
+    <div style="background:rgba(251,191,36,0.07);border:1px solid rgba(251,191,36,0.2);border-radius:8px;padding:12px 16px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--amber);margin-bottom:6px">The Lesson</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.65">${d.lesson}</div>
+    </div>
+    ${sourceHtml}
+  `);
+}
+
 // ── MODALS ───────────────────────────────────────────────────────────────────
 function openModal(html){ document.getElementById('modal-inner').innerHTML=html; document.getElementById('modal').classList.add('open'); }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
@@ -826,7 +1019,8 @@ window.addEventListener('DOMContentLoaded',()=>{
   initMainChart();
   renderFranchiseTable();
   renderMediaTable();
-  // Euro chart initializes on first tab visit
+  renderTokenTable();
+  // Euro chart is hardcoded SVG — no init needed
 });
 </script>
 </body>
