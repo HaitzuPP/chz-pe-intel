@@ -8,14 +8,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg:#0c0c10; --panel:#111116; --card:#18181f; --border:#1f1f28; --border2:#2a2a38;
-  --text:#ededf0; --text2:#8b8ba0; --text3:#52525f;
-  --green:#4ade80; --green-bg:rgba(74,222,128,.1);
-  --red:#f87171;   --red-bg:rgba(248,113,113,.1);
-  --amber:#fbbf24; --amber-bg:rgba(251,191,36,.1);
-  --blue:#60a5fa;  --blue-bg:rgba(96,165,250,.1);
-  --purple:#c084fc;--purple-bg:rgba(192,132,252,.1);
-  --cyan:#22d3ee;  --cyan-bg:rgba(34,211,238,.1);
+  --bg:#06101c; --panel:#0b1929; --card:#0f2035; --border:#172840; --border2:#1f3655;
+  --text:#ccd6e0; --text2:#637a90; --text3:#344d62;
+  --green:#2a9f63;  --green-bg:rgba(42,159,99,.13);
+  --red:#bf4f4f;    --red-bg:rgba(191,79,79,.13);
+  --amber:#b8832a;  --amber-bg:rgba(184,131,42,.13);
+  --blue:#3d82c8;   --blue-bg:rgba(61,130,200,.13);
+  --purple:#6870b8; --purple-bg:rgba(104,112,184,.13);
+  --cyan:#2a8fb5;   --cyan-bg:rgba(42,143,181,.13);
   --font:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono','Menlo',monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -124,8 +124,8 @@ tbody tr:last-child td{border-bottom:none}
 .modal-source a{color:var(--blue);font-size:11px;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
 .modal-source a:hover{text-decoration:underline}
 /* EURO CHART */
-.euro-chart-section{flex:1;min-height:0;padding:12px 24px 8px;display:flex;flex-direction:column}
-.euro-chart-wrap{flex:1;min-height:0;position:relative}
+.euro-chart-section{flex:none;padding:12px 24px 8px;display:block}
+.euro-chart-wrap{position:relative;overflow:hidden}
 .euro-footnote{font-size:10px;color:var(--text3);padding-top:6px;flex-shrink:0}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -183,10 +183,18 @@ tbody tr:last-child td{border-bottom:none}
   table { font-size: 11.5px; min-width: 640px; }
   td, th { padding: 9px 10px; }
   .col-sub { display: none; }
+  .hide-mobile { display: none !important; }
+
+  /* ── RWA table ── */
+  #page-rwa table { min-width: 440px; }
+
+  /* ── RWA chart ── */
+  #rwa-sec-chart .chart-wrap { height: 220px !important; }
 
   /* ── Euro chart section ── */
-  .euro-chart-section { padding: 10px 14px 8px; min-height: 0; }
-  .euro-chart-wrap { height: 260px; flex: none; }
+  .euro-chart-section { padding: 10px 14px 8px; }
+  .euro-chart-wrap { overflow: hidden; }
+  #page-euro .chart-wrap { height: 240px !important; }
   .euro-footnote { font-size: 9px; }
 
   /* ── Modal — bottom sheet on mobile ── */
@@ -232,6 +240,8 @@ tbody tr:last-child td{border-bottom:none}
       <button class="nav-tab" data-page="euro">Euro Football</button>
       <button class="nav-tab" data-page="media">Media Rights</button>
       <button class="nav-tab" data-page="token">Tokenisation</button>
+      <button class="nav-tab" data-page="alt">Alt Sports</button>
+      <button class="nav-tab" data-page="rwa">RWA Intel</button>
     </nav>
     <div class="header-right">
       <span class="badge-count" id="deal-count">-- deals</span>
@@ -279,8 +289,8 @@ tbody tr:last-child td{border-bottom:none}
       </div>
       <div class="table-controls">
         <div class="pill-group" id="franchise-filter">
-          <button class="pill active" onclick="setFranchiseFilter('all',this)">All (15)</button>
-          <button class="pill" onclick="setFranchiseFilter('nfl',this)">NFL (5)</button>
+          <button class="pill active" onclick="setFranchiseFilter('all',this)">All (19)</button>
+          <button class="pill" onclick="setFranchiseFilter('nfl',this)">NFL (9)</button>
           <button class="pill" onclick="setFranchiseFilter('nba',this)">NBA (10)</button>
         </div>
       </div>
@@ -301,107 +311,31 @@ tbody tr:last-child td{border-bottom:none}
     </div>
 
     <!-- ══ EURO FOOTBALL ══ -->
-    <div class="page" id="page-euro" style="overflow-y:auto">
+    <div class="page" id="page-euro">
       <div class="page-top" style="flex-shrink:0">
-        <div><div class="page-title">European Football</div><div class="page-sub">Price index 2016–2025 with 21 club equity transactions. Click any dot or row for sourced deal detail.</div></div>
+        <div><div class="page-title">European Football</div><div class="page-sub">Price index 2016–2025 with 44 club equity transactions across EPL, Serie A, La Liga, and Ligue 1. Click any dot or row for sourced deal detail.</div></div>
       </div>
-      <!-- Price index chart — always visible -->
-      <div class="euro-chart-section" id="euro-chart-section" style="flex:none;height:400px;min-height:0">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-shrink:0">
-          <span class="chart-label">Average Club Valuation by League (2016–2025, $B)</span>
-          <div class="chart-legend">
-            <div class="leg-item"><div class="leg-line" style="background:var(--purple)"></div>Premier League</div>
-            <div class="leg-item"><div class="leg-line" style="border-top:2px dashed var(--red)"></div>La Liga</div>
-            <div class="leg-item"><div class="leg-line" style="border-top:2px dashed var(--cyan)"></div>Serie A</div>
-            <div class="leg-item"><div class="leg-dot" style="background:var(--purple);border-color:#d8b4fe"></div>EPL Deal</div>
-            <div class="leg-item"><div class="leg-dot" style="background:var(--red);border-color:#fca5a5"></div>La Liga / Ligue 1</div>
-            <div class="leg-item"><div class="leg-dot" style="background:var(--cyan);border-color:#67e8f9"></div>Serie A</div>
-          </div>
+      <!-- Price index chart — Chart.js canvas -->
+      <div class="chart-controls" style="flex-shrink:0">
+        <span class="chart-label">Avg Club Valuation by League (2016–2025, $B)</span>
+        <div class="chart-legend">
+          <div class="leg-item"><div class="leg-line" style="background:var(--purple)"></div>EPL Avg</div>
+          <div class="leg-item"><div class="leg-line" style="border-top:2px dashed var(--red)"></div>La Liga Avg</div>
+          <div class="leg-item"><div class="leg-line" style="border-top:2px dashed var(--cyan)"></div>Serie A Avg</div>
+          <div class="leg-item"><div class="leg-line" style="border-top:2px dashed var(--amber)"></div>Ligue 1 Avg</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--purple);border-color:#9095d4"></div>EPL Deal</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--red);border-color:#d97878"></div>La Liga / L1</div>
+          <div class="leg-item"><div class="leg-dot" style="background:var(--cyan);border-color:#4db3d4"></div>Serie A</div>
         </div>
-        <div class="euro-chart-wrap" style="overflow-x:auto">
-<svg viewBox="0 0 940 370" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:560px;display:block">
-  <!-- Grid lines -->
-  <line x1="52" y1="340" x2="932" y2="340" stroke="#1f1f28" stroke-width="1"/>
-  <line x1="52" y1="289" x2="932" y2="289" stroke="#1f1f28" stroke-width="0.6"/>
-  <line x1="52" y1="237" x2="932" y2="237" stroke="#1f1f28" stroke-width="0.6"/>
-  <line x1="52" y1="185" x2="932" y2="185" stroke="#1f1f28" stroke-width="0.6"/>
-  <line x1="52" y1="134" x2="932" y2="134" stroke="#1f1f28" stroke-width="0.6"/>
-  <line x1="52" y1="82"  x2="932" y2="82"  stroke="#1f1f28" stroke-width="0.6"/>
-  <line x1="52" y1="30"  x2="932" y2="30"  stroke="#1f1f28" stroke-width="0.6"/>
-  <!-- Y labels -->
-  <text x="46" y="343" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$0</text>
-  <text x="46" y="292" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$1B</text>
-  <text x="46" y="240" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$2B</text>
-  <text x="46" y="188" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$3B</text>
-  <text x="46" y="137" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$4B</text>
-  <text x="46" y="85"  text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$5B</text>
-  <text x="46" y="33"  text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$6B</text>
-  <!-- X labels: 2016-2025, step=(932-52)/9=97.8 -->
-  <text x="52"  y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2016</text>
-  <text x="150" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2017</text>
-  <text x="248" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2018</text>
-  <text x="346" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2019</text>
-  <text x="444" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2020</text>
-  <text x="542" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2021</text>
-  <text x="640" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2022</text>
-  <text x="738" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2023</text>
-  <text x="836" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2024</text>
-  <text x="932" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2025</text>
-  <!-- COVID / PE markers -->
-  <line x1="444" y1="30" x2="444" y2="340" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="3,4"/>
-  <text x="448" y="44" fill="rgba(255,255,255,0.18)" font-size="9" font-family="Inter,sans-serif">COVID</text>
-  <line x1="640" y1="30" x2="640" y2="340" stroke="rgba(248,113,113,0.18)" stroke-width="1" stroke-dasharray="3,4"/>
-  <text x="644" y="44" fill="rgba(248,113,113,0.45)" font-size="9" font-family="Inter,sans-serif">Chelsea $5.3B</text>
-  <!-- y(v)=340-51.54*v  (0→340, 6.5→7) -->
-  <!-- Area fills -->
-  <polygon points="52,304 150,296 248,289 346,278 444,296 542,286 640,263 738,247 836,230 932,207 932,340 52,340" fill="rgba(192,132,252,0.07)"/>
-  <polygon points="52,322 150,318 248,314 346,307 444,317 542,312 640,300 738,289 836,271 932,250 932,340 52,340" fill="rgba(248,113,113,0.05)"/>
-  <polygon points="52,329 150,326 248,322 346,317 444,325 542,318 640,310 738,301 836,291 932,276 932,340 52,340" fill="rgba(34,211,238,0.04)"/>
-  <!-- EPL avg solid purple: 0.70,0.85,1.00,1.20,0.85,1.05,1.50,1.80,2.15,2.60 -->
-  <polyline points="52,304 150,296 248,289 346,278 444,296 542,286 640,263 738,247 836,230 932,207" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
-  <!-- La Liga dashed red: 0.35,0.42,0.50,0.65,0.45,0.55,0.78,1.00,1.35,1.75 -->
-  <polyline points="52,322 150,318 248,314 346,307 444,317 542,312 640,300 738,289 836,271 932,250" fill="none" stroke="#f87171" stroke-width="2" stroke-dasharray="6,3" stroke-linejoin="round" stroke-linecap="round"/>
-  <!-- Serie A dotted cyan: 0.22,0.28,0.35,0.45,0.30,0.42,0.58,0.75,0.95,1.25 -->
-  <polyline points="52,329 150,326 248,322 346,317 444,325 542,318 640,310 738,301 836,291 932,276" fill="none" stroke="#22d3ee" stroke-width="2" stroke-dasharray="3,4" stroke-linejoin="round" stroke-linecap="round"/>
-  <!-- ── Deal dots ─────────────────────────────────────────── -->
-  <!-- EPL / Multi purple dots -->
-  <circle cx="52"  cy="319" r="5" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e1'))"><title>Wolves / Fosun (2016) – £45M</title></circle>
-  <circle cx="444" cy="325" r="4" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e5'))"><title>Burnley / ALK Capital (2020) – ~£200M</title></circle>
-  <circle cx="542" cy="314" r="5" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e6'))"><title>Newcastle / Saudi PIF (2021) – £305M</title></circle>
-  <circle cx="542" cy="134" r="7" fill="#c084fc" stroke="#d8b4fe" stroke-width="2"   style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e8'))"><title>Liverpool via FSG / RedBird (2021) – £533M (impl. $4B)</title></circle>
-  <circle cx="640" cy="66"  r="8" fill="#c084fc" stroke="#d8b4fe" stroke-width="2"   style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e9'))"><title>Chelsea / Clearlake+Boehly (2022) – $5.3B</title></circle>
-  <circle cx="640" cy="333" r="4" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e12'))"><title>Southampton / Sport Republic (2022) – ~£90M</title></circle>
-  <circle cx="738" cy="315" r="5" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e13'))"><title>Leeds United / 49ers (2023) – £173M</title></circle>
-  <circle cx="738" cy="41"  r="8" fill="#c084fc" stroke="#d8b4fe" stroke-width="2"   style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e15'))"><title>Man Utd / INEOS Ratcliffe (2023) – £1.26B (impl. $5.8B)</title></circle>
-  <circle cx="738" cy="108" r="7" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e17'))"><title>Liverpool / Dynasty Equity (2023) – ~$200M</title></circle>
-  <circle cx="836" cy="312" r="4" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e20'))"><title>Everton / Friedkin Group (2024) – £400M+</title></circle>
-  <!-- La Liga / Ligue1 red dots -->
-  <circle cx="346" cy="334" r="4" fill="#f87171" stroke="#fca5a5" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e2'))"><title>Nice / INEOS (2019) – ~€100M</title></circle>
-  <circle cx="542" cy="339" r="3" fill="#f87171" stroke="#fca5a5" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e7'))"><title>Toulouse / RedBird (2021) – ~€25M</title></circle>
-  <circle cx="738" cy="283" r="6" fill="#f87171" stroke="#fca5a5" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e14'))"><title>Olympique Lyonnais / Eagle Football (2023) – ~€800M</title></circle>
-  <!-- Serie A cyan dots -->
-  <circle cx="444" cy="301" r="5" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e4'))"><title>AS Roma / Friedkin Group (2020) – €591M</title></circle>
-  <circle cx="640" cy="272" r="6" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e10'))"><title>AC Milan / RedBird (2022) – €1.2B</title></circle>
-  <circle cx="640" cy="320" r="4" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e11'))"><title>Atalanta / Bain Capital (2022) – €275M</title></circle>
-  <circle cx="738" cy="309" r="4" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e18'))"><title>Atalanta / Arctos Partners (2023) – ~$36M minority</title></circle>
-  <circle cx="836" cy="289" r="5" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e19'))"><title>Inter Milan / Oaktree (2024) – €395M debt→equity</title></circle>
-  <circle cx="932" cy="330" r="4" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e21'))"><title>Hellas Verona / Presidio Investors (2025)</title></circle>
-  <!-- Deal labels for major outliers -->
-  <text x="633" y="60"  fill="rgba(192,132,252,0.6)" font-size="8.5" font-family="Inter,sans-serif" text-anchor="end">Chelsea</text>
-  <text x="745" y="35"  fill="rgba(192,132,252,0.6)" font-size="8.5" font-family="Inter,sans-serif">Man Utd</text>
-  <text x="549" y="128" fill="rgba(192,132,252,0.5)" font-size="8.5" font-family="Inter,sans-serif">Liverpool</text>
-  <text x="745" y="102" fill="rgba(192,132,252,0.5)" font-size="8.5" font-family="Inter,sans-serif">Liverpool</text>
-  <text x="745" y="277" fill="rgba(248,113,113,0.5)" font-size="8.5" font-family="Inter,sans-serif">Lyon</text>
-</svg>
-        </div>
-        <div class="euro-footnote">Estimates based on Sportico, Deloitte Football Money League, and Forbes annual valuations. 2020 reflects COVID-adjusted figures. Deal dots show implied club enterprise value at transaction date — click any dot to open deal detail.</div>
       </div>
+      <div class="chart-wrap" style="height:340px;flex-shrink:0"><canvas id="euro-chart"></canvas></div>
+      <div class="euro-footnote" style="padding:4px 24px 8px;flex-shrink:0">Estimates based on Sportico, Deloitte Football Money League, and Forbes annual valuations. 2020 reflects COVID-adjusted figures. Deal dots are clickable for sourced deal detail.</div>
       <!-- Club equity table — always visible below chart -->
-      <div style="border-top:1px solid var(--border);flex-shrink:0">
+      <div style="border-top:1px solid var(--border);flex:1;min-height:0;display:flex;flex-direction:column">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 24px">
           <span class="chart-label">Club Equity Transactions</span>
           <div class="pill-group" id="euro-league-filter">
-            <button class="pill active" onclick="setEuroLeague('all',this)">All (21)</button>
+            <button class="pill active" onclick="setEuroLeague('all',this)">All (44)</button>
             <button class="pill" onclick="setEuroLeague('epl',this)">Premier League</button>
             <button class="pill" onclick="setEuroLeague('seriea',this)">Serie A</button>
             <button class="pill" onclick="setEuroLeague('laliga',this)">La Liga</button>
@@ -409,7 +343,7 @@ tbody tr:last-child td{border-bottom:none}
             <button class="pill" onclick="setEuroLeague('multi',this)">Multi-club</button>
           </div>
         </div>
-        <div class="tbl-wrap" style="padding-top:0;max-height:440px;overflow-y:auto">
+        <div class="tbl-wrap" style="padding-top:0;flex:1;min-height:0;overflow-y:auto">
           <table id="euro-club-table">
             <thead>
               <tr>
@@ -478,6 +412,97 @@ tbody tr:last-child td{border-bottom:none}
       </div>
     </div>
 
+    <!-- ══ ALT SPORTS ══ -->
+    <div class="page" id="page-alt">
+      <div class="page-top" style="flex-shrink:0">
+        <div><div class="page-title">Alt Sports Transactions</div><div class="page-sub">PE and institutional capital across F1, Golf, Rugby, Women's Sports, College, and Emerging Sports. Click any row for sourced deal detail.</div></div>
+        <div class="pill-group" id="alt-filter">
+          <button class="pill active" onclick="setAltFilter('all',this)">All</button>
+          <button class="pill" onclick="setAltFilter('f1',this)">Formula 1</button>
+          <button class="pill" onclick="setAltFilter('golf',this)">Golf</button>
+          <button class="pill" onclick="setAltFilter('rugby',this)">Rugby / Cricket</button>
+          <button class="pill" onclick="setAltFilter('women',this)">Women's</button>
+          <button class="pill" onclick="setAltFilter('college',this)">College</button>
+          <button class="pill" onclick="setAltFilter('emerging',this)">Emerging</button>
+        </div>
+      </div>
+      <div class="tbl-wrap" style="padding-top:12px">
+        <table>
+          <thead><tr>
+            <th style="width:50px">Year</th>
+            <th style="width:200px">Entity</th>
+            <th style="width:120px">Sport</th>
+            <th>Investor</th>
+            <th style="width:110px">Type</th>
+            <th style="text-align:right;width:120px">Value</th>
+            <th style="text-align:right;width:90px">Stake</th>
+          </tr></thead>
+          <tbody id="alt-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ══ RWA INTEL ══ -->
+    <div class="page" id="page-rwa">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">ONDO Price</div><div class="stat-val green">$0.258</div><div class="stat-chg neu">$1.26B mkt cap</div></div>
+        <div class="stat-card"><div class="stat-label">ONDO TVL</div><div class="stat-val">$3.53B</div><div class="stat-chg up">Largest RWA protocol</div></div>
+        <div class="stat-card"><div class="stat-label">PENDLE TVL</div><div class="stat-val">$1.75B</div><div class="stat-chg neu">$1.38 / $230M mkt cap</div></div>
+        <div class="stat-card"><div class="stat-label">CFG TVL</div><div class="stat-val">$1.60B</div><div class="stat-chg neu">$0.292 / $169M mkt cap</div></div>
+        <div class="stat-card"><div class="stat-label">OM / MANTRA</div><div class="stat-val" style="color:var(--red)">CRASHED</div><div class="stat-chg dn">-90%+ Apr 14 2026</div></div>
+        <div class="stat-card"><div class="stat-label">Tokens Tracked</div><div class="stat-val">6</div><div class="stat-chg neu">Listed RWA protocols</div></div>
+      </div>
+      <div class="sub-tabs" id="rwa-tabs">
+        <button class="sub-tab active" onclick="setRwaTab('overview',this)">Token Overview</button>
+        <button class="sub-tab" onclick="setRwaTab('chart',this)">Mkt Cap Map</button>
+        <button class="sub-tab" onclick="setRwaTab('activity',this)">Recent Activity</button>
+      </div>
+      <!-- Overview table -->
+      <div id="rwa-sec-overview" style="flex:1;min-height:0;display:flex;flex-direction:column">
+        <div class="table-controls">
+          <div class="pill-group" id="rwa-filter">
+            <button class="pill active" onclick="setRwaFilter('all',this)">All (6)</button>
+            <button class="pill" onclick="setRwaFilter('protocol',this)">DeFi Protocol</button>
+            <button class="pill" onclick="setRwaFilter('credit',this)">Credit</button>
+            <button class="pill" onclick="setRwaFilter('yield',this)">Yield</button>
+            <button class="pill" onclick="setRwaFilter('l1',this)">L1</button>
+          </div>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:70px">Ticker</th>
+              <th style="width:160px">Protocol</th>
+              <th style="width:110px">Category</th>
+              <th style="text-align:right;width:90px">Price</th>
+              <th style="text-align:right;width:100px">Mkt Cap</th>
+              <th style="text-align:right;width:120px">TVL / Loans</th>
+              <th style="text-align:right;width:70px">24h</th>
+              <th class="hide-mobile" style="width:200px">Exchanges</th>
+            </tr></thead>
+            <tbody id="rwa-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Mkt Cap Chart -->
+      <div id="rwa-sec-chart" style="display:none;flex:1;min-height:0;flex-direction:column">
+        <div class="chart-controls" style="flex-shrink:0">
+          <span class="chart-label">Market Cap by Token ($B) — OM excluded post-crash</span>
+          <div class="chart-legend">
+            <div class="leg-item"><div class="leg-line" style="background:var(--blue)"></div>DeFi Protocol</div>
+            <div class="leg-item"><div class="leg-line" style="background:var(--amber)"></div>Credit</div>
+            <div class="leg-item"><div class="leg-line" style="background:var(--cyan)"></div>Yield</div>
+            <div class="leg-item"><div class="leg-line" style="background:var(--purple)"></div>L1</div>
+          </div>
+        </div>
+        <div class="chart-wrap" style="flex:1;padding:0 24px 20px;min-height:0"><canvas id="rwa-chart"></canvas></div>
+      </div>
+      <!-- Activity feed -->
+      <div id="rwa-sec-activity" style="display:none;flex:1;min-height:0;overflow-y:auto">
+        <div id="rwa-activity-feed" style="padding:8px 24px 24px"></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -497,6 +522,7 @@ const nbaAvg = [{x:2019,y:1.9},{x:2020,y:2.1},{x:2021,y:2.3},{x:2022,y:2.58},{x:
 const eplAvg   = [{x:2016,y:.70},{x:2017,y:.85},{x:2018,y:1.00},{x:2019,y:1.20},{x:2020,y:.85},{x:2021,y:1.05},{x:2022,y:1.50},{x:2023,y:1.80},{x:2024,y:2.15},{x:2025,y:2.60}];
 const laligaAvg= [{x:2016,y:.35},{x:2017,y:.42},{x:2018,y:.50},{x:2019,y:.65},{x:2020,y:.45},{x:2021,y:.55},{x:2022,y:.78},{x:2023,y:1.00},{x:2024,y:1.35},{x:2025,y:1.75}];
 const serieaAvg= [{x:2016,y:.22},{x:2017,y:.28},{x:2018,y:.35},{x:2019,y:.45},{x:2020,y:.30},{x:2021,y:.42},{x:2022,y:.58},{x:2023,y:.75},{x:2024,y:.95},{x:2025,y:1.25}];
+const ligue1Avg= [{x:2016,y:.15},{x:2017,y:.18},{x:2018,y:.22},{x:2019,y:.30},{x:2020,y:.22},{x:2021,y:.28},{x:2022,y:.40},{x:2023,y:.55},{x:2024,y:.75},{x:2025,y:1.00}];
 
 const franchiseDeals = [
   {id:1, year:2020,xp:2020.0,franchise:'Utah Jazz',league:'NBA',badge:'b-nba',typeLabel:'Majority',typeBadge:'b-majority',buyer:'Ryan Smith (Qualtrics)',val:1.66,currency:'$',stake:'80%',lgAvg:2.10,prem:-21.0,source:'https://www.sportico.com/business/sales/2020/utah-jazz-sale-ryan-smith-1234612100/',notes:'Miller family ends 35-year ownership. Ryan Smith buys 80% at $1.66B implied. Arctos Sports Partners subsequently acquires a minority PE stake within 12 months, setting the stage for Arctos\'s broader sports expansion.'},
@@ -514,6 +540,10 @@ const franchiseDeals = [
   {id:13,year:2024,xp:2023.9,franchise:'Buffalo Bills',league:'NFL',badge:'b-nfl',typeLabel:'PE Entry',typeBadge:'b-pe',buyer:'Arctos Partners',val:5.80,currency:'$',stake:'~8%',lgAvg:5.60,prem:3.6,source:'https://fortune.com/2025/01/22/private-equity-investing-nfl-buffalo-bills-miami-dolphins/',notes:'First NFL PE deal post-Aug 2024 rule change. Passive minority, no governance rights. Templates the 10%-cap structure for the remaining 31 NFL franchises.'},
   {id:14,year:2024,xp:2024.15,franchise:'LA Chargers',league:'NFL',badge:'b-nfl',typeLabel:'PE Entry',typeBadge:'b-pe',buyer:'Arctos Partners',val:5.50,currency:'$',stake:'~8%',lgAvg:5.60,prem:-1.8,source:'https://fortune.com/2025/01/22/private-equity-investing-nfl-buffalo-bills-miami-dolphins/',notes:'Undisclosed valuation; estimated at NFL avg. Arctos deploys into a second NFL team in the same cycle. Spanos family retains full operational control.'},
   {id:15,year:2025,xp:2024.9,franchise:'Dallas Cowboys',league:'NFL',badge:'b-nfl',typeLabel:'PE Entry',typeBadge:'b-pe',buyer:'Approved PE Consortium',val:12.80,currency:'$',stake:'Up to 10%',lgAvg:7.13,prem:79.5,source:'https://www.sportico.com/valuations/teams/2025/nfl-team-values-2025-dallas-cowboys-billion-1234866760/',notes:'Most valuable franchise in North America. PE entry at 1.79x NFL avg. Jerry Jones retains full operational control. Max PE equity per approved firm at 10% cap: $1.28B.'},
+  {id:16,year:2024,xp:2024.1,franchise:'Miami Dolphins',league:'NFL',badge:'b-nfl',typeLabel:'PE Entry',typeBadge:'b-pe',buyer:'Ares Management',val:8.10,currency:'$',stake:'10%',lgAvg:5.60,prem:44.6,source:'https://fortune.com/2025/01/22/private-equity-investing-nfl-buffalo-bills-miami-dolphins/',notes:'Ares Management acquires 10% of the Dolphins at an $8.1B enterprise value in December 2024. The EV includes Hard Rock Stadium and the F1 Miami Grand Prix commercial rights, making it a venue plus event package, not a pure team equity stake. Ares deploys from existing PE fund vehicles rather than a dedicated sports fund. The deal structure is the most complex in the NFL\'s PE program to date, combining franchise equity, stadium real estate, and an F1 motorsport commercial right in a single capitalization.'},
+  {id:17,year:2025,xp:2025.1,franchise:'New England Patriots',league:'NFL',badge:'b-nfl',typeLabel:'PE Entry',typeBadge:'b-pe',buyer:'Sixth Street',val:9.00,currency:'$',stake:'3%',lgAvg:7.13,prem:26.2,source:'https://frontofficesports.com/sixth-street-new-england-patriots-nfl-pe/',notes:'Sixth Street acquires a 3% stake in the New England Patriots at a $9B+ implied franchise valuation in 2025. Sixth Street continues to be the most active firm in sports PE by deal count, having previously closed positions in the Spurs, Celtics, 49ers, Real Madrid, FC Barcelona, and Bay FC NWSL. The Patriots stake is notable as the first PE entry into a Kraft family-controlled franchise.'},
+  {id:18,year:2025,xp:2025.3,franchise:'San Francisco 49ers',league:'NFL',badge:'b-nfl',typeLabel:'PE Entry',typeBadge:'b-pe',buyer:'Family investor group',val:8.60,currency:'$',stake:'6.2%',lgAvg:7.13,prem:20.6,source:'https://frontofficesports.com/san-francisco-49ers-private-equity-nfl/',notes:'A family investor group acquires 6.2% of the San Francisco 49ers at an $8.6B implied valuation in 2025. The 49ers are the league\'s most recent Super Bowl participant (LIX, February 2025). Santa Clara stadium rights and the 49ers\'s Silicon Valley donor base give the franchise a premium over other non-Cowboys, non-Patriots market comps.'},
+  {id:19,year:2025,xp:2025.5,franchise:'New York Giants',league:'NFL',badge:'b-nfl',typeLabel:'PE Entry',typeBadge:'b-pe',buyer:'Koch family',val:10.50,currency:'$',stake:'10%',lgAvg:7.13,prem:47.3,source:'https://frontofficesports.com/new-york-giants-pe-nfl-valuation/',notes:'The Koch family acquires 10% of the New York Giants at a $10.5B implied valuation in 2025, the highest NFL franchise valuation outside the Cowboys. MetLife Stadium dual-use with the Jets provides a unique shared-infrastructure dynamic. The Koch entry represents old-capital family office money accessing sports as a capital preservation and social capital vehicle, distinct from the PE fund deployment that characterizes most NFL program positions.'},
 ];
 
 const euroDeals = [
@@ -539,6 +569,33 @@ const euroDeals = [
   {id:'e19',year:2024,xp:2024.0,impliedVal:1.00, club:'Inter Milan',country:'Italy',league:'Serie A',leagueBadge:'b-seriea',investor:'Oaktree Capital Management',type:'Debt to Equity',typeBadge:'b-pe',amount:'€395M (loan)',stake:'100%',source:'https://www.sportico.com/business/sales/2024/inter-milan-oaktree-capital-1234741295/',notes:'Oaktree seizes control after Zhang family defaults on a €395M loan. Debt-to-equity conversion, not a market transaction. Oaktree seeking a buyer at a reported €1B+ implied valuation. Illustrates loan-to-own PE strategy in football.'},
   {id:'e20',year:2024,xp:2024.2,impliedVal:.55, club:'Everton FC',country:'England',league:'Premier League',leagueBadge:'b-epl',investor:'Friedkin Group',type:'Majority',typeBadge:'b-majority',amount:'£400M+ (inc. debt)',stake:'Majority',source:'https://www.bbc.com/sport/football/67859040',notes:'Friedkin Group (also owner of AS Roma) completes the Everton takeover in December 2024. Enterprise value approaches £1B when including assumed debt, working capital, and new Bramley-Moore Dock stadium costs. Friedkin becomes the 10th US owner in the Premier League.'},
   {id:'e21',year:2025,xp:2025.0,impliedVal:.20, club:'Hellas Verona',country:'Italy',league:'Serie A',leagueBadge:'b-seriea',investor:'Presidio Investors (US PE)',type:'Full Acq.',typeBadge:'b-full',amount:'Undisclosed',stake:'Controlling',source:'https://pe-insights.com/private-equity-fuels-surge-in-european-soccer-as-us-investors-drive-23-7bn-market/',notes:'Presidio Investors acquires controlling interest in Hellas Verona, the standout deal in the early-2025 European M&A cycle. Continues US PE expansion into Serie A beyond the marquee Milan clubs.'},
+  // EPL historical (e22-e27)
+  {id:'e22',year:2008,xp:2008.5,impliedVal:.20, club:'Manchester City',country:'England',league:'Premier League',leagueBadge:'b-epl',investor:'Abu Dhabi United Group (Sheikh Mansour)',type:'Full Acq.',typeBadge:'b-full',amount:'£210M',stake:'100%',source:'https://www.bbc.co.uk/sport/football/46808879',notes:'Sheikh Mansour bin Zayed Al Nahyan acquires Manchester City for £210M in September 2008, completing the deal on the final day of the transfer window. The club was loss-making and largely trophyless. Over the following 15 years ADUG invested over £1.5B in infrastructure, squad, and the Etihad Campus. CFG\'s implied valuation in the 2023 Silver Lake top-up exceeded £5B, a 25x return on the entry price.'},
+  {id:'e23',year:2010,xp:2010.3,impliedVal:.30, club:'Liverpool FC',country:'England',league:'Premier League',leagueBadge:'b-epl',investor:'Fenway Sports Group (FSG)',type:'Full Acq.',typeBadge:'b-full',amount:'£300M',stake:'100%',source:'https://www.bbc.co.uk/sport/football/11492715',notes:'FSG purchases Liverpool from Tom Hicks and George Gillett in October 2010 for £300M following a contested legal battle. The sale was forced through by the Liverpool board after the Hicks-Gillett partnership collapsed. FSG subsequently won the Premier League (2020), Champions League (2019), and multiple domestic cups. The implied valuation at the 2023 Dynasty Equity minority placement approached $4.5B, a 15x step-up in sterling terms.'},
+  {id:'e24',year:2013,xp:2013.5,impliedVal:.17, club:'Fulham FC',country:'England',league:'Premier League',leagueBadge:'b-epl',investor:'Shahid Khan',type:'Full Acq.',typeBadge:'b-full',amount:'~£150-200M',stake:'100%',source:'https://www.bbc.co.uk/sport/football/24423660',notes:'Shahid Khan (owner of the NFL Jacksonville Jaguars) acquires Fulham from Mohamed Al Fayed for an undisclosed sum estimated at £150-200M. Fulham were in the Premier League at time of acquisition but suffered two subsequent relegations. Khan invested in Craven Cottage stadium expansion and the club returned to the Premier League in 2022. Illustrates cross-sport ownership diversification by US sports franchisees.'},
+  {id:'e25',year:2015,xp:2015.5,impliedVal:.10, club:'Crystal Palace FC',country:'England',league:'Premier League',leagueBadge:'b-epl',investor:'Josh Harris / David Blitzer (consortium)',type:'Partial',typeBadge:'b-partial',amount:'~£50M',stake:'~36%',source:'https://www.bbc.co.uk/sport/football/33038464',notes:'Harris and Blitzer (Apollo Global co-founders) acquire a combined ~36% stake in Crystal Palace alongside existing shareholders Steve Parish and Martin Long. Entry at an implied ~£140M club valuation. The pair were among the earliest US PE professionals to take a direct English football position. Blitzer subsequently built a multi-club portfolio across Europe. John Textor later acquired the Harris-Blitzer position at a materially higher implied valuation.'},
+  {id:'e26',year:2016,xp:2016.5,impliedVal:.12, club:'Swansea City AFC',country:'England',league:'Premier League',leagueBadge:'b-epl',investor:'Jason Levien / Steve Kaplan',type:'Majority',typeBadge:'b-majority',amount:'~£110M',stake:'~68%',source:'https://www.bbc.co.uk/sport/football/37193887',notes:'American investors Levien and Kaplan acquire a 68% controlling stake for approximately £110M in July 2016. Swansea were in the Premier League at time of acquisition. The club was relegated in 2018 and has remained in the Championship since, materially eroding the original investment thesis. A cautionary case for Premier League PE investors who underweight relegation risk.'},
+  {id:'e27',year:2018,xp:2018.7,impliedVal:.30, club:'Aston Villa FC',country:'England',league:'Championship (promoted 2019)',leagueBadge:'b-epl',investor:'Nassef Sawiris / Wes Edens',type:'Majority',typeBadge:'b-majority',amount:'~£50M',stake:'Majority (55%+)',source:'https://www.bbc.co.uk/sport/football/45234609',notes:'Egyptian billionaire Nassef Sawiris (Chairman, Aston Villa) and Wes Edens (Co-owner, Milwaukee Bucks) rescue Villa from near-administration in July 2018 with a majority stake for an estimated £50M. The partnership successfully won promotion to the Premier League in 2019. The club invested heavily and finished 4th in the 2023-24 Premier League season, qualifying for the Champions League. Implied valuation by 2024 was reported north of £1.5B, a 30x step-up from entry.'},
+  // Serie A historical (e28-e33)
+  {id:'e28',year:2011,xp:2011.3,impliedVal:.07, club:'AS Roma',country:'Italy',league:'Serie A',leagueBadge:'b-seriea',investor:'Thomas DiBenedetto / James Pallotta',type:'Majority',typeBadge:'b-majority',amount:'€70M approx.',stake:'67%',source:'https://www.reuters.com/article/us-soccer-asroma-sale/as-roma-sold-to-us-group-idUSTRE70T1GN20110130',notes:'US consortium led by Thomas DiBenedetto acquires 67% of AS Roma from Unicredit for approximately €70M. James Pallotta subsequently assumed the chairmanship. The ownership invested in brand rebuilding and digital-first fan engagement, but consistently failed to challenge the Juventus-led Scudetto race. Pallotta sold to Dan Friedkin in 2020 for €591M, generating a strong absolute return despite sporting underperformance relative to ambitions.'},
+  {id:'e29',year:2014,xp:2014.5,impliedVal:.04, club:'Bologna FC',country:'Italy',league:'Serie A',leagueBadge:'b-seriea',investor:'Joey Saputo',type:'Full Acq.',typeBadge:'b-full',amount:'~€12M',stake:'100%',source:'https://www.footballitalia.it/2014/03/saputo-completes-bologna-takeover/35552',notes:'Canadian businessman Joey Saputo (Montreal Impact MLS owner) acquires struggling Bologna for approximately €12M in March 2014, when the club was near the foot of Serie A. Patient capital strategy: Saputo stabilized the club financially, hired Thiago Motta as manager in 2022, and Bologna finished 5th in 2023-24 to qualify for the Champions League for the first time in 60 years. A textbook example of value creation via sporting merit in Italian football.'},
+  {id:'e30',year:2017,xp:2017.4,impliedVal:.20, club:'AC Milan',country:'Italy',league:'Serie A',leagueBadge:'b-seriea',investor:'Yonghong Li (Chinese consortium)',type:'Full Acq.',typeBadge:'b-full',amount:'€740M (inc. debt)',stake:'99.9%',source:'https://www.bbc.com/sport/football/39616891',notes:'Chinese businessman Yonghong Li acquires AC Milan from Silvio Berlusconi for approximately €740M inclusive of assumed debt. Li financed the purchase partly via a €303M bridge loan from Elliott Management at a high interest rate. When Li defaulted on the loan in 2018, Elliott seized the club. The Li acquisition was the first major Chinese football investment to collapse at the ownership level, providing a reference case for covenant and debt-structure risk in European football M&A.'},
+  {id:'e31',year:2019,xp:2019.5,impliedVal:.17, club:'ACF Fiorentina',country:'Italy',league:'Serie A',leagueBadge:'b-seriea',investor:'Rocco Commisso',type:'Full Acq.',typeBadge:'b-full',amount:'~€165M',stake:'100%',source:'https://www.sportico.com/business/sales/2019/fiorentina-sold-to-mediacom-founder-rocco-commisso/',notes:'Italian-American billionaire Rocco Commisso (Mediacom founder) acquires Fiorentina from the Della Valle family for approximately €165M. Commisso has invested significantly in a new training ground (Viola Park) and is pursuing a new 40,000-seat stadium to replace Stadio Artemio Franchi. Ownership has stabilized the club in the top half of Serie A and reached the 2022-23 Conference League Final.'},
+  {id:'e32',year:2020,xp:2020.4,impliedVal:.04, club:'Venezia FC',country:'Italy',league:'Serie B (prom. 2021)',leagueBadge:'b-seriea',investor:'VFC Newco (Duncan Niederauer et al.)',type:'Full Acq.',typeBadge:'b-full',amount:'Undisclosed (~€5M)',stake:'100%',source:'https://www.theguardian.com/football/2020/may/08/venice-buy-out-niederauer',notes:'US-led consortium headed by ex-NYSE CEO Duncan Niederauer acquires Venezia out of financial distress for a nominal sum. The group rebranded the club with a fashion-forward aesthetic (kit collaboration with Kappa, global lifestyle brand positioning) that generated substantial international media coverage. Venezia won promotion to Serie A in 2021. A case study in brand-led valuation creation at a lower-league club entry point.'},
+  {id:'e33',year:2021,xp:2021.6,impliedVal:.07, club:'Genoa CFC',country:'Italy',league:'Serie A',leagueBadge:'b-seriea',investor:'777 Partners',type:'Full Acq.',typeBadge:'b-full',amount:'€150M approx.',stake:'Controlling (99%)',source:'https://www.sportico.com/business/sales/2021/genoa-777-partners-deal-1234636765/',notes:'Miami-based alternative investment firm 777 Partners acquires 99% of Italy\'s oldest professional club for approximately €150M. 777 Partners also owns Hertha Berlin (Germany), Standard Liege (Belgium), Red Star (France), Vasco da Gama (Brazil), and Melbourne Victory (Australia). In 2023-24 777 Partners faced severe liquidity problems across its portfolio, with clubs unable to pay wages, illustrating leverage and cash-management risk in aggressive multi-club roll-up strategies.'},
+  // La Liga historical (e34-e39)
+  {id:'e34',year:2010,xp:2010.7,impliedVal:.04, club:'Malaga CF',country:'Spain',league:'La Liga',leagueBadge:'b-laliga',investor:'Sheikh Abdullah Al Thani',type:'Full Acq.',typeBadge:'b-full',amount:'~€36M',stake:'100%',source:'https://www.theguardian.com/football/2010/jun/10/malaga-sheikh-abdulla-al-thani',notes:'Qatari Sheikh Abdullah Al Thani acquires Malaga for approximately €36M and commits to transformative spending, bringing in Manuel Pellegrini and players including Santi Cazorla, Ruud van Nistelrooy, and Nacho Monreal. Malaga reached the UEFA Champions League quarter-finals in 2012-13 but were controversially eliminated (Dortmund goal awarded despite the ball not crossing the line). UEFA subsequently banned Malaga from European competition due to unpaid debts. The club declined sharply and is currently in the Spanish second division.'},
+  {id:'e35',year:2014,xp:2014.3,impliedVal:.05, club:'Valencia CF',country:'Spain',league:'La Liga',leagueBadge:'b-laliga',investor:'Peter Lim (Meriton Holdings)',type:'Majority',typeBadge:'b-majority',amount:'~€110M',stake:'71%+',source:'https://www.theguardian.com/football/2014/may/29/peter-lim-buys-valencia',notes:'Singapore billionaire Peter Lim acquires 71% of Valencia through Meriton Holdings for approximately €110M in May 2014. Initial optimism around financial stabilization gave way to growing fan discontent over a decade-long stadium project (Nou Mestalla) that remains unfinished. Valencia were relegated from La Liga in 2024 for the first time in 35 years under Lim\'s tenure. Among the most criticized long-running foreign ownerships in European football.'},
+  {id:'e36',year:2015,xp:2015.4,impliedVal:.58, club:'Atletico de Madrid',country:'Spain',league:'La Liga',leagueBadge:'b-laliga',investor:'Wanda Group (Wang Jianlin)',type:'Partial',typeBadge:'b-partial',amount:'€52M',stake:'20%',source:'https://www.reuters.com/article/us-atletico-madrid-wanda/wanda-group-buys-20-percent-stake-in-atletico-madrid-idUSKCN0P70GL20150628',notes:'Chinese conglomerate Wanda Group acquires 20% of Atletico Madrid for €52M, implying a €260M club valuation in June 2015. Atletico had just reached consecutive Champions League finals in 2014 and 2016. Wanda sold its stake back to club management circa 2021 as Chinese outbound sports investment faced domestic regulatory pressure. The transaction was an early indicator of the political risk embedded in Chinese strategic sports acquisitions.'},
+  {id:'e37',year:2016,xp:2016.3,impliedVal:.06, club:'RCD Espanyol',country:'Spain',league:'La Liga',leagueBadge:'b-laliga',investor:'Rastar Group (Chen Yansheng)',type:'Full Acq.',typeBadge:'b-full',amount:'~€40M',stake:'100%',source:'https://www.theguardian.com/football/2016/mar/28/rcd-espanyol-chinese-company-rastar-group',notes:'Chinese toy and entertainment conglomerate Rastar Group acquires 100% of RCD Espanyol for approximately €40M. Espanyol were in La Liga at time of acquisition, winning promotion from the second division the prior season. The club was relegated from La Liga in 2020 and again in 2023. Rastar has retained ownership but sporting and commercial performance has been below initial projections.'},
+  {id:'e38',year:2017,xp:2017.6,impliedVal:.02, club:'Girona FC',country:'Spain',league:'La Liga (prom. 2022)',leagueBadge:'b-laliga',investor:'City Football Group',type:'Partial',typeBadge:'b-partial',amount:'Undisclosed',stake:'44.3%',source:'https://www.theguardian.com/football/2017/dec/31/girona-city-football-group-pep-guardiola',notes:'City Football Group acquires 44.3% of Girona in December 2017, the same month the club made their La Liga debut. Girona provides a development and feeder pathway within the CFG multi-club network. The club finished 3rd in La Liga in 2023-24, qualifying for the Champions League, where they were drawn in the same group as Manchester City, triggering UEFA investigation into multi-club ownership conflict-of-interest rules.'},
+  {id:'e39',year:2018,xp:2018.5,impliedVal:.02, club:'Real Valladolid CF',country:'Spain',league:'La Liga',leagueBadge:'b-laliga',investor:'Cristiano Ronaldo',type:'Majority',typeBadge:'b-majority',amount:'~€30M',stake:'51%',source:'https://www.theguardian.com/football/2018/sep/03/cristiano-ronaldo-buys-majority-stake-real-valladolid',notes:'Cristiano Ronaldo acquires a 51% controlling stake in Real Valladolid for an estimated €30M in September 2018 while playing for Juventus. The investment represents athlete-led ownership diversification into a second-division Spanish club seeking promotion. Valladolid were promoted and relegated multiple times under Ronaldo\'s tenure. Ronaldo increased his stake to 82% by 2023. An illustrative example of elite athlete capital being deployed into minority-sport entry points within major leagues.'},
+  // Ligue 1 historical (e40-e44)
+  {id:'e40',year:2011,xp:2011.1,impliedVal:.10, club:'Paris Saint-Germain',country:'France',league:'Ligue 1',leagueBadge:'b-ligue1',investor:'Qatar Sports Investments (QSI)',type:'Full Acq.',typeBadge:'b-full',amount:'€50M initial',stake:'70% (then 100%)',source:'https://www.bbc.co.uk/sport/football/14149590',notes:'Qatar Sports Investments acquires 70% of PSG for €50M in June 2011, with an option to purchase the remaining 30%. QSI exercised full ownership shortly thereafter. The purchase formed the centrepiece of Qatar\'s pre-2022 World Cup soft power strategy. Subsequent transfer spending exceeded €1.5B, breaking the world record multiple times (Neymar at €222M in 2017, Mbappe at €180M in 2018). PSG\'s equity value is estimated at €4-5B by 2024, a 50x multiple on entry, though on an economic basis factoring total investment the return profile is far more modest.'},
+  {id:'e41',year:2011,xp:2011.5,impliedVal:.05, club:'AS Monaco FC',country:'Monaco/France',league:'Ligue 1',leagueBadge:'b-ligue1',investor:'Dmitri Rybolovlev',type:'Full Acq.',typeBadge:'b-full',amount:'€1 (with €100M debt assumption)',stake:'66.7%',source:'https://www.theguardian.com/football/2011/dec/21/as-monaco-dmitri-rybolovlev',notes:'Russian billionaire Dmitri Rybolovlev acquires 66.7% of AS Monaco (then in Ligue 2) for a symbolic €1 plus assumption of approximately €100M of debt in December 2011. Rybolovlev funded a promotion-winning squad and Champions League semi-final run in 2016-17 with Kylian Mbappe and Bernardo Silva. He subsequently sold Mbappe to PSG and reinvested proceeds. Monaco remain a Ligue 1 top-six fixture. A rare example of distressed football entry generating genuine sporting and financial returns simultaneously.'},
+  {id:'e42',year:2016,xp:2016.7,impliedVal:.10, club:'Olympique de Marseille',country:'France',league:'Ligue 1',leagueBadge:'b-ligue1',investor:'Frank McCourt',type:'Full Acq.',typeBadge:'b-full',amount:'€45M (club) + €180M debts',stake:'100%',source:'https://www.bbc.co.uk/sport/football/37482879',notes:'US real estate investor and former LA Dodgers owner Frank McCourt acquires Marseille from Margarita Louis-Dreyfus for €45M in October 2016, with total obligations (debt plus recapitalization) approaching €225M. McCourt committed to significant investment but the club has underperformed relative to expectations, finishing outside Ligue 1\'s top four for extended periods. Marseille remain a commercial powerhouse by French standards but have not replicated the Louis-Dreyfus era\'s European ambitions.'},
+  {id:'e43',year:2018,xp:2018.3,impliedVal:.08, club:'FC Girondins de Bordeaux',country:'France',league:'Ligue 1',leagueBadge:'b-ligue1',investor:'King Street Capital Management',type:'Full Acq.',typeBadge:'b-full',amount:'~€50M',stake:'Controlling',source:'https://www.rfi.fr/en/france/20181207-new-era-bordeaux-us-funds-king-street-capital-take-over-girondins',notes:'New York-based hedge fund King Street Capital Management acquires a controlling stake in Bordeaux for an estimated €50M in late 2018. King Street attempted to restructure the club\'s finances but placed Bordeaux in voluntary liquidation in 2022 after failing to find a buyer. Bordeaux were relegated to the National level (third tier) and required a phoenix reconstruction. One of the clearest examples of pure financial-return logic failing in football, where stakeholder complexity and relegation spirals overwhelm hedge-fund restructuring playbooks.'},
+  {id:'e44',year:2023,xp:2023.2,impliedVal:.15, club:'RC Strasbourg Alsace',country:'France',league:'Ligue 1',leagueBadge:'b-ligue1',investor:'BlueCo (Chelsea ownership group)',type:'Full Acq.',typeBadge:'b-full',amount:'~€10M',stake:'100%',source:'https://www.theguardian.com/football/2023/jun/07/strasbourg-takeover-chelsea-owners-blueco',notes:'BlueCo, the consortium that acquired Chelsea FC for £4.25B in 2022, purchases RC Strasbourg in June 2023 for a nominal sum as the anchor for its continental multi-club strategy. Strasbourg provide a French feeder market and Ligue 1 broadcast exposure at minimal entry cost. The acquisition mirrors the Chelsea purchase thesis: use football as a platform for broader media and data value creation. UEFA multi-club ownership rules limit player movement between BlueCo entities in European competition.'},
   // League commercial (id l1-l4)
   {id:'l1', year:2021,xp:null,impliedVal:null,club:'La Liga (Boost LaLiga)',country:'Spain',league:'La Liga',leagueBadge:'b-laliga',investor:'CVC Capital Partners',type:'Commercial Rights',typeBadge:'b-broadcast',amount:'€1.994B',stake:'8.2% for 50 yrs',source:'https://frontofficesports.com/la-liga-agrees-to-3-2b-investment-from-cvc/',notes:'CVC acquires 8.2% of Boost LaLiga — the commercial entity covering broadcast and sponsorship revenues — for 50 years. Largest PE investment in European football at time of close. Real Madrid, Barcelona, and Athletic Bilbao opted out to preserve their independent commercial upside.'},
   {id:'l2', year:2022,xp:null,impliedVal:null,club:'FC Barcelona (LaLiga TV)',country:'Spain',league:'La Liga',leagueBadge:'b-laliga',investor:'Sixth Street Partners',type:'Rev. Securitization',typeBadge:'b-rev-sec',amount:'€507M total',stake:'25% of 25yr TV rights',source:'https://sixthstreet.com/investment_announce/fc-barcelona-and-sixth-street-reach-an-agreement-for-the-acquisition-of-a-10-share-of-the-clubs-laliga-tv-rights/',notes:'Two tranches in summer 2022. Tranche 1 (June 2022): €207.5M for 10% of LaLiga broadcast income. Tranche 2 (July 2022): ~€300M for additional 15%. Barcelona labelled these as "economic levers" to fund player signings following COVID financial damage and FFP constraints.'},
@@ -556,6 +613,34 @@ const mediaDeals = [
   {id:'m7',year:2025,sport:'american',entity:'NBA',league:'NBA',investor:'Amazon, NBC, ESPN',type:'Broadcast License',typeBadge:'b-broadcast',value:'$76B total',duration:'11 yrs (2025-2036)',status:'Active',statusBadge:'b-full',source:'https://www.sportico.com/leagues/basketball/2025/nba-revenue-projected-2025-26-season-1234876505/',notes:'2.6x increase from prior Turner/ESPN package. Amazon and NBC debut as rights holders. Generates ~$200M per team annually — the primary driver of NBA franchise avg surpassing $5.5B in 2025.'},
   {id:'m8',year:2024,sport:'football',entity:'Premier League',league:'Premier League',investor:'Sky Sports, TNT Sports, Amazon',type:'Broadcast License (UK)',typeBadge:'b-broadcast',value:'£6.7B',duration:'4 yrs (2025-2029)',status:'Active',statusBadge:'b-full',source:'https://insidersport.com/2025/06/16/premier-league-revenues-europe-deloitt/',notes:'UK domestic rights at £6.7B. International rights estimated at an additional $9B+ over the same period. Premier League is by far the most commercially valuable football competition globally.'},
   {id:'m9',year:2022,sport:'football',entity:'Serie A',league:'Serie A',investor:'DAZN / Sky Italy',type:'Broadcast License',typeBadge:'b-broadcast',value:'€900M/yr',duration:'3 yrs (2021-2024)',status:'Expired',statusBadge:'b-proposed',source:'https://www.footitalia.com/news/serie-a-tv-rights-stake/',notes:'DAZN acquires 7 of 10 match packages. DAZN significantly underperformed subscriber targets, creating renegotiation pressure mid-contract. Illustrates streaming rights overvaluation risk.'},
+];
+
+const altDeals = [
+  // Formula 1 teams
+  {id:'a1',year:2020,sport:'Formula 1',category:'f1',entity:'Williams Racing',investor:'Dorilton Capital',type:'Full Acq.',typeBadge:'b-full',value:'$200M',stake:'100%',source:'https://www.formula1.com/en/latest/article.williams-racing-announces-sale-to-dorilton-capital.5kO1NxRkQ1kmkIr5Lp35Xk.html',notes:'Dorilton Capital acquires Williams Racing from the Williams family for approximately $200M in August 2020 after the team\'s financial distress became acute. Williams finished last in the constructors\' championship in 2019. By 2025 the implied team valuation is estimated at $2.1B — a 10.5x return in five years, representing one of the highest-returning sports PE investments ever executed. The turnaround combined new technical leadership with Dorilton\'s long-term capital commitment.'},
+  {id:'a2',year:2023,sport:'Formula 1',category:'f1',entity:'BWT Alpine F1',investor:'RedBird Capital + Otro Capital + Maximum Effort',type:'Minority',typeBadge:'b-partial',value:'€200M (24%)',stake:'24%',source:'https://www.racefans.net/2023/07/24/alpine-sell-24-stake-to-investors-including-ryan-reynolds-and-rob-mcelhenney/',notes:'RedBird Capital leads a consortium including Otro Capital and Maximum Effort Investments (backed by Ryan Reynolds and Patrick Mahomes) to acquire 24% of Alpine F1 for €200M, implying a $900M team valuation. The Reynolds/Mahomes involvement mirrors the Welcome to Wrexham media playbook: athlete and celebrity equity as media distribution amplifier. Alpine implied valuation by 2025 exceeds $2.1B.'},
+  {id:'a3',year:2024,sport:'Formula 1',category:'f1',entity:'Aston Martin Aramco F1',investor:'Accel + HPS Investment Partners',type:'Significant Equity',typeBadge:'b-pe',value:'Undisclosed',stake:'Significant',source:'https://www.motorsport.com/f1/news/aston-martin-secures-investment-from-accel-hps/10524893/',notes:'Silicon Valley VC Accel and credit investor HPS take significant equity in Aston Martin F1 (AMR GP Holdings Ltd) in 2024, pushing the team\'s implied valuation past $2B. The deal positions Aston Martin as one of the most institutionally capitalized mid-field F1 teams. Saudi PIF has separately acquired an estimated ~8% stake, though this was never publicly confirmed.'},
+  {id:'a4',year:2025,sport:'Formula 1',category:'f1',entity:'Red Bull Racing',investor:'Carlyle Group',type:'Investment Partnership',typeBadge:'b-pe',value:'Undisclosed',stake:'Partnership',source:'https://frontofficesports.com/carlyle-group-red-bull-racing/',notes:'Carlyle Group enters a strategic investment management partnership with Red Bull Racing in 2025, providing capital for commercial development and potential team valuation structuring. Red Bull Racing won the constructors\' championship in 2022, 2023, and held the top slot going into 2025. The deal structure is an investment partnership, not a direct equity stake in the racing team itself, but signals PE appetite at the most valuable end of the F1 grid.'},
+  // Golf
+  {id:'a5',year:2024,sport:'Golf',category:'golf',entity:'PGA Tour Enterprises',investor:'Strategic Sports Group (SSG)',type:'Commercial Partnership',typeBadge:'b-broadcast',value:'$3.0B',stake:'Minority commercial',source:'https://www.wsj.com/sports/golf/pga-tour-private-equity-deal-ssa-sports-a4bd70d5',notes:'SSG — an FSG-anchored consortium of major US sports operators including Marc Attanasio, Arthur Blank, Steven Cohen, Wyc Grousbeck, Tom Werner, Marc Lasry, and John Henry — invests $3B into PGA Tour Enterprises in January 2024. Players receive $1.5B+ in equity in the new commercial entity. The deal is partly a defensive response to LIV Golf\'s Saudi PIF-funded raid on Tour talent. Golf\'s audience demographics (highest household income of any major sport) imply media rights are systematically underpriced relative to viewership quality.'},
+  {id:'a6',year:2022,sport:'Golf',category:'golf',entity:'LIV Golf',investor:'Saudi Public Investment Fund',type:'Greenfield',typeBadge:'b-pe',value:'$2.5B+',stake:'100%',source:'https://frontofficesports.com/pif-liv-golf-investment/',notes:'Saudi PIF has invested an estimated $2.5B+ building LIV Golf from scratch as a rival to the PGA Tour. The investment is explicitly strategic rather than financial: LIV Golf is a vehicle for Saudi soft power via the sportswashing criticism it has attracted. The PIF-PGA merger talks stalled in 2025 after the framework agreement signed in June 2023 failed to clear political and player association opposition. Jon Rahm defected from the Tour to LIV in December 2024 for a reported $500M+ total contract. The LIV vs Tour standoff continues to suppress PGA Tour media rights valuations.'},
+  // Rugby and Cricket
+  {id:'a7',year:2021,sport:'Rugby',category:'rugby',entity:'Premiership Rugby (UK)',investor:'CVC Capital Partners',type:'Majority (Commercial)',typeBadge:'b-majority',value:'Undisclosed',stake:'Majority stake',source:'https://www.bbc.co.uk/sport/rugby-union/56943574',notes:'CVC acquires a majority stake in Premiership Rugby\'s commercial vehicle. Post-investment, sponsorship revenue has doubled to approximately €220M and TV viewership has risen 40%. CVC is now integrating Premiership Rugby into its Global Sport Group (GSG, formed September 2025), a $14B permanent capital holding company that also includes LaLiga, Ligue 1, Six Nations, United Rugby Championship, WTA Ventures, and Volleyball World.'},
+  {id:'a8',year:2021,sport:'Rugby',category:'rugby',entity:'United Rugby Championship',investor:'CVC Capital Partners',type:'Minority Commercial',typeBadge:'b-pe',value:'Undisclosed',stake:'~28%',source:'https://www.bbc.co.uk/sport/rugby-union/57083736',notes:'CVC acquires approximately 28% of the United Rugby Championship (URC), which covers clubs across Ireland, Wales, Scotland, South Africa, and Italy. Part of CVC\'s growing rugby portfolio alongside Premiership Rugby and Six Nations. URC is now part of CVC\'s Global Sport Group alongside seven other sports properties. The common thesis across all CVC rugby investments: broadcast revenues are materially underpriced relative to live event quality and growing international (US, Japan) fanbase.'},
+  {id:'a9',year:2022,sport:'Rugby',category:'rugby',entity:'Six Nations Rugby',investor:'CVC Capital Partners',type:'Minority Commercial',typeBadge:'b-pe',value:'£365M',stake:'14.3%',source:'https://www.theguardian.com/sport/2022/mar/24/six-nations-cvc-deal-rugby-union',notes:'CVC acquires 14.3% of Six Nations\' commercial rights vehicle for £365M, completing its European rugby triumvirate (Premiership, URC, Six Nations). CVC\'s total European rugby investment now implies a multi-billion-pound commercial rights position across the continent\'s most watched club and international competitions. All three properties are consolidated into Global Sport Group as of September 2025.'},
+  {id:'a10',year:2021,sport:'Cricket',category:'rugby',entity:'Gujarat Titans (IPL)',investor:'CVC Capital Partners',type:'Franchise Acquisition',typeBadge:'b-full',value:'$745M at acq., sold $575M',stake:'67%',source:'https://www.espncricinfo.com/story/cvc-capital-partners-acquires-ipl-franchise-ahmedabad-for-5-625-crore-rupees-1290555',notes:'CVC acquires 67% of the newly franchised IPL Ahmedabad team (later Gujarat Titans) for approximately $745M (Rs 5,625 crore). The Titans won the IPL in their debut 2022 season and again in 2023. CVC sold the position in February 2025 for approximately $575M, realizing a loss on the original acquisition price but exiting ahead of the broader IPL rights cycle. The IPL remains the highest-growth sports media property in Asia by subscriber monetization.'},
+  // Women's sports
+  {id:'a11',year:2024,sport:'WNBA',category:'women',entity:'Toronto Tempo',investor:'Kilmer Sports Ventures',type:'Expansion Franchise',typeBadge:'b-full',value:'$115M',stake:'100%',source:'https://www.nytimes.com/2024/02/07/sports/basketball/wnba-expansion-toronto.html',notes:'Kilmer Sports Ventures acquires the Toronto WNBA expansion franchise for $115M. Serena Williams joined the ownership group in 2025. The Toronto franchise will play its first season in the WNBA\'s international expansion push. Franchise fees have moved from $25M (Seattle Storm, 2008) to $115M in 16 years, a 4.6x step-up driven by the $2.2B broadcast deal and accelerating elite player profiles.'},
+  {id:'a12',year:2024,sport:'WNBA',category:'women',entity:'New York Liberty',investor:'Undisclosed Minority Buyers',type:'Minority Stake Sale',typeBadge:'b-partial',value:'$450M implied',stake:'Minority',source:'https://frontofficesports.com/wnba-valuations-new-york-liberty/',notes:'The New York Liberty completes a minority stake sale at an implied $450M franchise valuation. The Liberty won the 2024 WNBA championship with Breanna Stewart. The $450M implied valuation is a direct function of the WNBA\'s $2.2B, 11-year broadcast deal (Disney, Amazon, NBCUniversal). Pre-broadcast-deal, WNBA franchise values were estimated at $20-40M. The step-change confirms that women\'s sports franchise valuations are now driven by the same media rights inflation mechanics as male sports.'},
+  {id:'a13',year:2024,sport:'NWSL',category:'women',entity:'Bay FC',investor:'Sixth Street',type:'Majority Founding',typeBadge:'b-majority',value:'$125M franchise fee',stake:'Majority',source:'https://frontofficesports.com/sixth-street-bay-fc-nwsl/',notes:'Sixth Street is the majority founding investor in Bay FC (National Women\'s Soccer League), paying the $125M NWSL expansion fee. Sixth Street structured the investment as the Bay Collective multi-club platform for women\'s soccer. Bay FC is the first NWSL club with a primary backer that is a major global PE firm. The NWSL permits PE majority or 100% ownership — structurally more accessible than any major male sports league — making women\'s soccer the most PE-friendly professional sport in North America.'},
+  {id:'a14',year:2025,sport:'Miami Dolphins',category:'women',entity:'Miami Dolphins + Hard Rock Stadium + F1 Miami GP',investor:'Ares Management',type:'PE Entry (NFL)',typeBadge:'b-pe',value:'$8.1B implied',stake:'10%',source:'https://fortune.com/2025/01/22/private-equity-investing-nfl-buffalo-bills-miami-dolphins/',notes:'Ares Management acquires 10% of the Miami Dolphins at an $8.1B implied valuation in December 2024, the first Ares position in an NFL franchise. The $8.1B enterprise value includes Hard Rock Stadium and the Formula 1 Miami Grand Prix commercial rights, making it a venue and live event package rather than a pure team stake. Ares deploys from its existing PE fund vehicles rather than a dedicated sports fund, demonstrating that mainstream mega-funds now treat sports as a standard asset class within a diversified portfolio.'},
+  // College
+  {id:'a15',year:2025,sport:'College Athletics',category:'college',entity:'Big 12 Conference Capital Facility',investor:'RedBird Capital + Weatherford Capital',type:'Credit Facility',typeBadge:'b-broadcast',value:'$500M',stake:'Revenue-share liens',source:'https://frontofficesports.com/redbird-capital-college-athletics-investment/',notes:'RedBird Capital Partners and Weatherford Capital (operating as Collegiate Athletic Solutions) finalize a $500M capital facility for Big 12 member institutions in December 2025. Individual schools can draw up to $30M each. Returns are structured as revenue-share liens on incremental athletic revenue generated by the capital, designed to avoid NCAA equity rules. The House v. NCAA settlement (2025) opened the door to direct athlete revenue sharing, creating the first institutional capital entry point in college athletics.'},
+  {id:'a16',year:2025,sport:'College Athletics',category:'college',entity:'Learfield (multimedia rights)',investor:'TPG',type:'Majority Acquisition',typeBadge:'b-majority',value:'~$2.0B',stake:'Controlling',source:'https://frontofficesports.com/tpg-learfield-deal/',notes:'TPG acquires a controlling stake in Learfield, the dominant college sports multimedia rights company, for approximately $2B. Learfield controls multimedia rights (sponsorship, content, events) for over 200 US university athletic programs. The investment is a bet that House v. NCAA triggers a decade-long professionalization of college athletics and that the rights company controlling commercial relationships across the ecosystem captures the most durable margin. TPG\'s broader sports portfolio includes On Location (NFL premium hospitality).'},
+  // Emerging sports
+  {id:'a17',year:2024,sport:'Pickleball',category:'emerging',entity:'UPA Holdings (MLP / PPA merger entity)',investor:'Multiple (Sixteen investors)',type:'Greenfield Rollup',typeBadge:'b-pe',value:'$75M raised',stake:'Various',source:'https://frontofficesports.com/upa-pickleball-holding-company-private-equity/',notes:'A consortium of 16 investors commits $75M to form UPA Holdings, the commercial parent entity for professional pickleball through a merger of Major League Pickleball and the Professional Pickleball Association. Pickleball franchise values have appreciated from approximately $100K per team in 2021 to $13-16M in 2025. Participation growth exceeds any other racket sport, with an estimated 36M players in the US. The sport\'s court infrastructure requirement is lower than tennis, enabling faster venue expansion. Media rights remain underpriced.'},
+  {id:'a18',year:2024,sport:'Padel',category:'emerging',entity:'NY Atlantics (Pro Padel League)',investor:'Left Lane Capital + Kactus Capital + Gary Vaynerchuk',type:'Club Founding Investment',typeBadge:'b-pe',value:'$10M+ club valuation',stake:'Majority',source:'https://frontofficesports.com/pro-padel-league-funding/',notes:'Left Lane Capital, Kactus Capital, and Gary Vaynerchuk back the NY Atlantics, a founding Pro Padel League franchise, at a $10M+ club valuation. Padel is the fastest-growing sport in Europe by participation, with an estimated 25M active players across 90+ countries. US padel infrastructure is at a very early stage, giving first-mover operators a significant venue-location advantage. The PPL is positioning itself as the US padel equivalent of what the ATP was to tennis in the 1980s.'},
+  {id:'a19',year:2026,sport:'PE / Sports Platform',category:'emerging',entity:'Arctos Partners (acquired by KKR)',investor:'KKR',type:'Platform Acquisition',typeBadge:'b-full',value:'Up to $1.9B',stake:'100%',source:'https://www.wsj.com/finance/investing/kkr-arctos-sports-deal-1b-a459a27c',notes:'KKR acquires Arctos Partners for up to $1.9B in February 2026, folding the $7B AUM sports PE specialist into KKR Solutions. Arctos\'s 23-team sports/esports portfolio (including Dodgers, Giants, Jazz, Warriors, PSG, and Aston Martin F1) becomes the sports exposure layer within KKR\'s retail distribution network. Ian Charles argued before the deal that AI will supercharge team valuations via fan data monetisation — KKR is buying that thesis as a permanent capital position. This is the defining consolidation event in sports PE: the boutique specialist era is over.'},
 ];
 
 const tokenDeals = [
@@ -662,8 +747,75 @@ const tokenDeals = [
   },
 ];
 
+const rwaCompetitors = [
+  {id:'r1',ticker:'ONDO',name:'Ondo Finance',shortName:'ONDO',type:'protocol',typeLabel:'DeFi Protocol',typeBadge:'b-seriea',
+   price:'$0.258',mktCap:1.26,mktCapLabel:'$1.26B',tvl:3.53,tvlLabel:'$3.53B TVL',
+   change24h:'+5.2%',changePos:true,exchanges:'Binance, Coinbase, OKX, Kraken, Bybit',
+   asset:'Tokenized Treasuries (OUSG, USDY)',chains:'Ethereum, Solana, Mantle, Sui, XRP Ledger',
+   status:'Live',statusBadge:'b-full',source:'https://ondo.finance',
+   notes:'Ondo Finance is the largest listed RWA DeFi protocol at $1.26B market cap and $3.53B TVL. OUSG tokenizes BlackRock BUIDL as its underlying — a DeFi protocol built on top of a TradFi fund. USDY is a yield-bearing stablecoin alternative backed by T-bills and bank deposits. In February 2026 Ondo partnered with Binance to enable tokenized stocks trading, receiving Abu Dhabi regulatory approval in March 2026. ONDO integrates with Mastercard\'s multi-token network for cross-border settlement. The $1.26B market cap vs $3.53B TVL implies a 0.36x P/TVL ratio — cheap relative to DeFi-native protocol comps at equivalent TVL.'},
+  {id:'r2',ticker:'SYRUP',name:'Maple Finance',shortName:'SYRUP',type:'credit',typeLabel:'Credit',typeBadge:'b-partial',
+   price:'$0.235',mktCap:0.28,mktCapLabel:'$280M',tvl:null,tvlLabel:'$2.4B originated',
+   change24h:'+5.8%',changePos:true,exchanges:'Coinbase, OKX, Kraken, Binance',
+   asset:'Institutional On-Chain Credit Pools',chains:'Ethereum, Solana',
+   status:'Live',statusBadge:'b-full',source:'https://maple.finance',
+   notes:'SYRUP is the governance and yield-capture token for Maple Finance, the leading on-chain institutional credit protocol with $2.4B in total loans originated and approximately $100M ARR as of 2025. SYRUP replaced MPL as the primary protocol token in 2024, with holders receiving a share of protocol interest income. In 2025 Maple launched Syrup.fi — a retail-accessible yield product built on top of institutional credit pools, extending the addressable market below the accredited investor threshold. Pool delegates (professional credit underwriters) manage on-chain credit facilities for institutional borrowers. At $280M market cap vs ~$100M ARR, the implied P/ARR of ~2.8x is materially below legacy fintech comps.'},
+  {id:'r3',ticker:'CFG',name:'Centrifuge',shortName:'CFG',type:'credit',typeLabel:'Credit',typeBadge:'b-partial',
+   price:'$0.292',mktCap:0.169,mktCapLabel:'$169M',tvl:1.6,tvlLabel:'$1.6B TVL',
+   change24h:'+17.1%',changePos:true,exchanges:'Coinbase, Kraken, Binance',
+   asset:'RWA Loans (invoice, trade finance, real estate)',chains:'Centrifuge Chain (Polkadot), Ethereum',
+   status:'Live',statusBadge:'b-full',source:'https://centrifuge.io',
+   notes:'Centrifuge is the oldest RWA credit protocol — it originated the concept of on-chain real-world asset financing for SMEs and provides infrastructure for MakerDAO/Sky\'s real-world asset portfolio, which at peak exceeded $1.2B through Centrifuge pools. CFG token FDV of ~$199M sits well below the protocol\'s $1.6B TVL, creating a 0.12x P/TVL ratio — the most attractive valuation metric of any listed RWA token. CFG holders govern protocol parameters and receive origination and management fees from pools that have financed invoice receivables, trade finance, and real estate loans across 20+ jurisdictions. The protocol has survived multiple DeFi credit cycles, a distinction newer competitors cannot claim.'},
+  {id:'r4',ticker:'PENDLE',name:'Pendle Finance',shortName:'PENDLE',type:'yield',typeLabel:'Yield',typeBadge:'b-broadcast',
+   price:'$1.38',mktCap:0.23,mktCapLabel:'$230M',tvl:1.75,tvlLabel:'$1.75B TVL',
+   change24h:'-3.2%',changePos:false,exchanges:'Binance, OKX, Coinbase, Bybit, Kraken',
+   asset:'Yield Tokenization (Principal / Yield Tokens)',chains:'Ethereum, Arbitrum, BSC, Mantle',
+   status:'Live',statusBadge:'b-full',source:'https://pendle.finance',
+   notes:'Pendle Finance enables the separation of yield from principal, creating PT (Principal Token) and YT (Yield Token) instruments from any yield-bearing asset including tokenized Treasuries, stablecoins, and liquid staking tokens. At $1.75B TVL, Pendle is the dominant on-chain fixed income trading venue. In January 2026 Pendle replaced its rigid 2-year vePENDLE model with sPENDLE — a liquid staking token with 14-day withdrawal — directing up to 80% of protocol revenue to PENDLE buybacks and cutting emissions by ~30%. RWA markets on Pendle now offer fixed APYs on gold, insurance, private credit, and T-bills, including the mTBILL product from MidasRWA. Pendle was included on Grayscale\'s Q2 2026 watchlist. Annualized revenue: ~$34M.'},
+  {id:'r5',ticker:'PLUME',name:'Plume Network',shortName:'PLUME',type:'l1',typeLabel:'RWA L1',typeBadge:'b-pe',
+   price:'$0.0126',mktCap:0.070,mktCapLabel:'$70M',tvl:0.047,tvlLabel:'$47M TVL (Nest)',
+   change24h:'-2.1%',changePos:false,exchanges:'Binance, OKX, Bybit, Upbit',
+   asset:'RWA-Native EVM L1 Blockchain',chains:'Plume (EVM-compatible L1)',
+   status:'Live',statusBadge:'b-full',source:'https://plumenetwork.xyz',
+   notes:'Plume Network is the first EVM-compatible L1 blockchain purpose-built for real-world assets, hosting 280K+ RWA holders — approximately 50% of the total sector by count — and $47M TVL in its Nest staking product. PLUME suffered a severe correction following the January 21, 2026 cliff unlock: 1.37B tokens (39.75% of circulating supply) unlocked for early backers and core contributors, driving the price from an all-time high of $0.2475 to the current $0.0126 — a 94.8% decline. At $70M market cap, PLUME is the highest-risk, highest-potential entry in this set. The L1 thesis is structurally compelling (all RWA protocols need an underlying chain optimized for compliance and asset registry) but the vesting structure has created significant near-term sell pressure that must be absorbed before the price reflects the fundamental thesis.'},
+  {id:'r6',ticker:'OM',name:'MANTRA',shortName:'OM',type:'l1',typeLabel:'RWA L1',typeBadge:'b-failed',
+   price:'~$0.09',mktCap:null,mktCapLabel:'N/A (post-crash)',tvl:null,tvlLabel:'N/A',
+   change24h:'-90%+',changePos:false,exchanges:'Binance, OKX (liquidity severely impaired)',
+   asset:'RWA-Focused L1 Blockchain',chains:'MANTRA Chain (Cosmos SDK)',
+   status:'CRASHED',statusBadge:'b-failed',source:'https://mantrachain.io',
+   notes:'MANTRA\'s OM token crashed more than 90% in under one hour on April 14, 2026, wiping approximately $5B+ in market cap. CEO JP Mullin alleged that centralized exchanges forced OM-collateralized leveraged positions into mass liquidations during low-liquidity hours. Pre-crash, OM carried a ~$5B market cap driven by partnership announcements in the Middle East and Gulf region. The crash exposed several compounding risks: concentrated token ownership (a small number of wallets controlled a disproportionate float), heavy use of OM as collateral for leveraged positions on CEXs, and the fragility of valuations built on regulatory partnership announcements rather than verified on-chain TVL or revenue. The event is the most significant risk signal in the RWA token sector as of this writing and establishes a clear reference case: narrative-driven market caps without on-chain TVL or protocol revenue are structurally fragile under any liquidity stress.'},
+];
+
+const rwaAnnouncements = [
+  {id:'ra1',date:'Apr 14 2026',entity:'OM / MANTRA',badge:'b-failed',
+   headline:'MANTRA OM token crashes 90%+ in under one hour — $5B market cap destroyed',
+   detail:'OM crashes from ~$6.30 to under $0.60 in less than 60 minutes on April 14, 2026. CEO JP Mullin alleges centralized exchanges forced OM-collateralized leveraged positions into mass liquidation during low-liquidity hours. The crash exposes concentrated wallet ownership, over-leveraged CEX collateral positions, and a market cap built on Middle East partnership announcements rather than verified on-chain TVL or protocol revenue. The event is the defining risk signal for the RWA token sector: narrative-driven valuations without protocol fundamentals do not survive liquidity stress.'},
+  {id:'ra2',date:'Mar 2026',entity:'Ondo Finance',badge:'b-seriea',
+   headline:'ONDO tokenized stocks on Binance receive Abu Dhabi ADGM regulatory approval',
+   detail:'Ondo Finance\'s tokenized equities product, distributed via Binance, receives regulatory approval from the Abu Dhabi Global Market (ADGM). This is the first Gulf-jurisdiction regulatory clearance for a DeFi-native tokenized equities product on a major exchange, opening UAE institutional and retail capital to on-chain equities via ONDO infrastructure.'},
+  {id:'ra3',date:'Feb 2026',entity:'Ondo Finance',badge:'b-seriea',
+   headline:'Ondo partners with Binance to launch tokenized stocks trading',
+   detail:'Ondo Finance partners with Binance to enable tokenized stock trading, bringing US equities and ETFs on-chain for Binance\'s global user base. This is the largest distribution partnership for any RWA-native protocol and positions ONDO as the infrastructure layer for tokenized equities on the world\'s largest crypto exchange by volume.'},
+  {id:'ra4',date:'Jan 2026',entity:'PENDLE',badge:'b-broadcast',
+   headline:'Pendle replaces vePENDLE with liquid sPENDLE — 80% of revenue to buybacks',
+   detail:'Pendle Finance replaces its rigid 2-year vote-escrow (vePENDLE) model with sPENDLE, a liquid staking token with 14-day withdrawal. The new tokenomics direct up to 80% of protocol revenue to PENDLE buybacks and cut emissions by approximately 30% via algorithmic allocation. The redesign directly improves PENDLE token economics relative to the prior model and aligns with Grayscale\'s subsequent Q2 2026 watchlist inclusion.'},
+  {id:'ra5',date:'Jan 21 2026',entity:'PLUME',badge:'b-pe',
+   headline:'PLUME cliff unlock: 1.37B tokens (39.75% of supply) released to backers',
+   detail:'Plume Network\'s 12-month post-launch cliff unlock hits: 700M tokens to early backers and 667M to core contributors are released simultaneously. PLUME price declines from ATH $0.2475 toward $0.01 as backer supply enters the market. The token\'s structural vesting design — a single large cliff rather than a graduated vest — concentrates sell pressure into one window rather than distributing it, a tokenomics design flaw now visible in the price chart.'},
+  {id:'ra6',date:'Oct 2025',entity:'Ondo Finance',badge:'b-seriea',
+   headline:'Ondo integrates with Mastercard Multi-Token Network for cross-border settlement',
+   detail:'Ondo Finance\'s USDY integrates into Mastercard\'s multi-token network, enabling cross-border settlement using RWA-backed instruments. The first major payment network integration for a DeFi-native RWA protocol. USDY\'s yield-bearing characteristics make it superior to stablecoins for settlement use cases where counterparties hold positions overnight.'},
+  {id:'ra7',date:'2025',entity:'SYRUP / Maple',badge:'b-partial',
+   headline:'Maple launches Syrup.fi, extending institutional credit pools to retail',
+   detail:'Maple Finance launches Syrup.fi — a permissionless retail yield product built on top of institutional credit pools. SYRUP token holders receive a share of protocol interest income. First time a major institutional RWA credit protocol has deliberately targeted sub-accredited-investor capital. Annualized revenue estimated at ~$100M on $2.4B originated.'},
+  {id:'ra8',date:'2025',entity:'CFG / Centrifuge',badge:'b-partial',
+   headline:'Centrifuge TVL surpasses $1B; becomes Sky (MakerDAO) primary RWA infrastructure',
+   detail:'Centrifuge TVL crosses $1B, driven by MakerDAO/Sky\'s decision to route its real-world asset portfolio through Centrifuge pools. CFG token FDV of $199M vs $1.6B TVL creates a 0.12x P/TVL ratio — the cheapest fundamental valuation of any listed RWA token tracked on rwa.xyz. The MakerDAO/Sky relationship provides Centrifuge with the most durable institutional anchor in the on-chain credit sector.'},
+];
+
 // ── STATE ────────────────────────────────────────────────────────────────────
-let chartFilter='all', franchiseFilter='all', mediaFilter='all', tokenFilter='all';
+let chartFilter='all', franchiseFilter='all', mediaFilter='all', tokenFilter='all', altFilter='all';
+let rwaFilter='all', rwaTab='overview', rwaChart=null;
 let mainChart=null, euroChart=null;
 let franchiseSort={col:'year',dir:-1};
 
@@ -679,7 +831,8 @@ document.getElementById('main-nav').addEventListener('click', e=>{
   e.target.classList.add('active');
   document.getElementById('page-'+e.target.dataset.page).classList.add('active');
   if(e.target.dataset.page==='market' && mainChart) setTimeout(()=>mainChart.resize(),50);
-  if(e.target.dataset.page==='euro' && euroTab==='index' && euroChart) setTimeout(()=>euroChart.resize(),50);
+  if(e.target.dataset.page==='euro') setTimeout(()=>{ if(!euroChart) initEuroChart(); else euroChart.resize(); },50);
+  if(e.target.dataset.page==='rwa') setTimeout(()=>{ if(rwaTab==='chart'){ if(!rwaChart) initRwaChart(); else rwaChart.resize(); }},50);
 });
 
 // ── CHART PLUGINS ────────────────────────────────────────────────────────────
@@ -728,10 +881,10 @@ function buildMainDatasets(){
   const nflPts=franchiseDeals.filter(t=>t.league==='NFL').map(t=>({x:t.xp,y:t.val,id:t.id}));
   const nbaPts=franchiseDeals.filter(t=>t.league==='NBA').map(t=>({x:t.xp,y:t.val,id:t.id}));
   return[
-    {label:'NFL Avg',type:'line',data:sn?nflAvg:[],borderColor:'#4ade80',backgroundColor:'rgba(74,222,128,.05)',fill:true,tension:.3,borderWidth:2,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#4ade80',order:3},
-    {label:'NBA Avg',type:'line',data:sb?nbaAvg:[],borderColor:'#fbbf24',backgroundColor:'rgba(251,191,36,.05)',borderDash:[6,3],fill:true,tension:.3,borderWidth:2,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#fbbf24',order:3},
-    {label:'NFL Deal',type:'scatter',data:sn?nflPts:[],backgroundColor:'#4ade80',borderColor:'#86efac',pointRadius:7,pointHoverRadius:11,borderWidth:2,order:1},
-    {label:'NBA Deal',type:'scatter',data:sb?nbaPts:[],backgroundColor:'#fbbf24',borderColor:'#fde68a',pointRadius:7,pointHoverRadius:11,borderWidth:2,order:1},
+    {label:'NFL Avg',type:'line',data:sn?nflAvg:[],borderColor:'#2a9f63',backgroundColor:'rgba(42,159,99,.07)',fill:true,tension:.3,borderWidth:2,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#2a9f63',order:3},
+    {label:'NBA Avg',type:'line',data:sb?nbaAvg:[],borderColor:'#b8832a',backgroundColor:'rgba(184,131,42,.07)',borderDash:[6,3],fill:true,tension:.3,borderWidth:2,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#b8832a',order:3},
+    {label:'NFL Deal',type:'scatter',data:sn?nflPts:[],backgroundColor:'#2a9f63',borderColor:'#48c882',pointRadius:7,pointHoverRadius:11,borderWidth:2,order:1},
+    {label:'NBA Deal',type:'scatter',data:sb?nbaPts:[],backgroundColor:'#b8832a',borderColor:'#d4a84e',pointRadius:7,pointHoverRadius:11,borderWidth:2,order:1},
   ];
 }
 function initMainChart(){
@@ -741,12 +894,12 @@ function initMainChart(){
     options:{
       responsive:true,maintainAspectRatio:false,animation:{duration:200},
       scales:{
-        x:{type:'linear',min:2019.3,max:2025.7,ticks:{stepSize:1,callback:v=>Number.isInteger(v)?String(v):'',color:'#52525f',font:{family:'Inter,system-ui,sans-serif',size:11}},grid:{color:'#1f1f28'},border:{color:'#1f1f28'}},
-        y:{min:0,max:14,ticks:{callback:v=>'$'+v+'B',color:'#52525f',font:{family:'JetBrains Mono,monospace',size:10}},grid:{color:'#1f1f28'},border:{color:'#1f1f28'}}
+        x:{type:'linear',min:2019.3,max:2025.7,ticks:{stepSize:1,callback:v=>Number.isInteger(v)?String(v):'',color:'#344d62',font:{family:'Inter,system-ui,sans-serif',size:11}},grid:{color:'#172840'},border:{color:'#172840'}},
+        y:{min:0,max:14,ticks:{callback:v=>'$'+v+'B',color:'#344d62',font:{family:'JetBrains Mono,monospace',size:10}},grid:{color:'#172840'},border:{color:'#172840'}}
       },
       plugins:{
         legend:{display:false},
-        tooltip:{backgroundColor:'#18181f',borderColor:'#2a2a38',borderWidth:1,titleColor:'#ededf0',bodyColor:'#8b8ba0',padding:12,
+        tooltip:{backgroundColor:'#0f2035',borderColor:'#1f3655',borderWidth:1,titleColor:'#ccd6e0',bodyColor:'#637a90',padding:12,
           titleFont:{family:'Inter,system-ui,sans-serif',size:12,weight:'600'},
           bodyFont:{family:'JetBrains Mono,monospace',size:11},
           callbacks:{
@@ -768,40 +921,46 @@ function setChartFilter(f,btn){
   mainChart.update();
 }
 
-// ── EURO CHART — hardcoded SVG, no init needed ────────────────────────────
-function initEuroChart(){
-  // Chart is now a static SVG — no initialization required
-  return;
-  const ctx=document.getElementById('euro-chart'); if(!ctx) return; // dead code
-  // Deal scatter: EPL, LaLiga/Ligue1, Serie A dots
-  const eplPts  =euroDeals.filter(d=>d.xp&&d.impliedVal&&(d.leagueBadge==='b-epl'||d.leagueBadge==='b-multi')).map(d=>({x:d.xp,y:d.impliedVal,id:d.id}));
-  const laligaPts=euroDeals.filter(d=>d.xp&&d.impliedVal&&(d.leagueBadge==='b-laliga'||d.leagueBadge==='b-ligue1')).map(d=>({x:d.xp,y:d.impliedVal,id:d.id}));
+// ── EURO CHART — Chart.js (lazy init on first tab visit) ─────────────────
+function buildEuroDatasets(){
+  const all=euroLeague==='all', f=euroLeague;
+  const showEpl  = all||f==='epl'||f==='multi';
+  const showLaliga=all||f==='laliga';
+  const showSeriea=all||f==='seriea';
+  const showLigue1=all||f==='ligue1';
+  const eplPts   =euroDeals.filter(d=>d.xp&&d.impliedVal&&(d.leagueBadge==='b-epl'||d.leagueBadge==='b-multi')).map(d=>({x:d.xp,y:d.impliedVal,id:d.id}));
+  const laligaPts=euroDeals.filter(d=>d.xp&&d.impliedVal&&d.leagueBadge==='b-laliga').map(d=>({x:d.xp,y:d.impliedVal,id:d.id}));
+  const ligue1Pts=euroDeals.filter(d=>d.xp&&d.impliedVal&&d.leagueBadge==='b-ligue1').map(d=>({x:d.xp,y:d.impliedVal,id:d.id}));
   const seriePts =euroDeals.filter(d=>d.xp&&d.impliedVal&&d.leagueBadge==='b-seriea').map(d=>({x:d.xp,y:d.impliedVal,id:d.id}));
-  euroChart=new Chart(ctx,{
-    type:'scatter',
-    data:{datasets:[
-      {label:'Premier League Avg',type:'line',data:eplAvg,borderColor:'#c084fc',backgroundColor:'rgba(192,132,252,.05)',fill:true,tension:.3,borderWidth:2,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#c084fc',order:3},
-      {label:'La Liga Avg',type:'line',data:laligaAvg,borderColor:'#f87171',backgroundColor:'rgba(248,113,113,.04)',borderDash:[6,3],fill:true,tension:.3,borderWidth:2,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#f87171',order:3},
-      {label:'Serie A Avg',type:'line',data:serieaAvg,borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,.04)',borderDash:[4,4],fill:true,tension:.3,borderWidth:2,pointRadius:3,pointHoverRadius:5,pointBackgroundColor:'#22d3ee',order:3},
-      {label:'EPL / Multi-club Deal',type:'scatter',data:eplPts,backgroundColor:'#c084fc',borderColor:'#d8b4fe',pointRadius:6,pointHoverRadius:10,borderWidth:2,order:1},
-      {label:'La Liga / Ligue 1 Deal',type:'scatter',data:laligaPts,backgroundColor:'#f87171',borderColor:'#fca5a5',pointRadius:6,pointHoverRadius:10,borderWidth:2,order:1},
-      {label:'Serie A Deal',type:'scatter',data:seriePts,backgroundColor:'#22d3ee',borderColor:'#67e8f9',pointRadius:6,pointHoverRadius:10,borderWidth:2,order:1},
-    ]},
-    plugins:[euroPlugin],
+  return[
+    {label:'EPL Avg',type:'line',data:showEpl?eplAvg:[],borderColor:'#6870b8',backgroundColor:'rgba(104,112,184,.08)',fill:true,tension:.3,borderWidth:2.2,pointRadius:0,pointHoverRadius:4,order:4},
+    {label:'La Liga Avg',type:'line',data:showLaliga?laligaAvg:[],borderColor:'#bf4f4f',backgroundColor:'rgba(191,79,79,.06)',borderDash:[6,3],fill:true,tension:.3,borderWidth:2,pointRadius:0,pointHoverRadius:4,order:4},
+    {label:'Serie A Avg',type:'line',data:showSeriea?serieaAvg:[],borderColor:'#2a8fb5',backgroundColor:'rgba(42,143,181,.06)',borderDash:[4,4],fill:true,tension:.3,borderWidth:2,pointRadius:0,pointHoverRadius:4,order:4},
+    {label:'Ligue 1 Avg',type:'line',data:showLigue1?ligue1Avg:[],borderColor:'#b8832a',backgroundColor:'rgba(184,131,42,.06)',borderDash:[2,5],fill:true,tension:.3,borderWidth:2,pointRadius:0,pointHoverRadius:4,order:4},
+    {label:'EPL Deal',type:'scatter',data:showEpl?eplPts:[],backgroundColor:'#6870b8',borderColor:'#9095d4',pointRadius:6,pointHoverRadius:10,borderWidth:2,order:1},
+    {label:'La Liga Deal',type:'scatter',data:showLaliga?laligaPts:[],backgroundColor:'#bf4f4f',borderColor:'#d97878',pointRadius:6,pointHoverRadius:10,borderWidth:2,order:1},
+    {label:'Ligue 1 Deal',type:'scatter',data:showLigue1?ligue1Pts:[],backgroundColor:'#bf4f4f',borderColor:'#d97878',pointRadius:5,pointHoverRadius:9,borderWidth:2,order:1},
+    {label:'Serie A Deal',type:'scatter',data:showSeriea?seriePts:[],backgroundColor:'#2a8fb5',borderColor:'#4db3d4',pointRadius:6,pointHoverRadius:10,borderWidth:2,order:1},
+  ];
+}
+function initEuroChart(){
+  const canvas=document.getElementById('euro-chart'); if(!canvas) return;
+  euroChart=new Chart(canvas.getContext('2d'),{
+    type:'scatter',data:{datasets:buildEuroDatasets()},plugins:[euroPlugin],
     options:{
       responsive:true,maintainAspectRatio:false,animation:{duration:200},
       scales:{
-        x:{type:'linear',min:2015.8,max:2025.5,ticks:{stepSize:1,callback:v=>Number.isInteger(v)?String(v):'',color:'#52525f',font:{family:'Inter,system-ui,sans-serif',size:11}},grid:{color:'#1f1f28'},border:{color:'#1f1f28'}},
-        y:{min:0,max:6.5,ticks:{callback:v=>'$'+v+'B',color:'#52525f',font:{family:'JetBrains Mono,monospace',size:10}},grid:{color:'#1f1f28'},border:{color:'#1f1f28'}}
+        x:{type:'linear',min:2010.5,max:2025.7,ticks:{stepSize:1,callback:v=>Number.isInteger(v)?String(v):'',color:'#344d62',font:{family:'Inter,system-ui,sans-serif',size:11}},grid:{color:'#172840'},border:{color:'#172840'}},
+        y:{min:0,max:6.5,ticks:{callback:v=>'$'+v+'B',color:'#344d62',font:{family:'JetBrains Mono,monospace',size:10}},grid:{color:'#172840'},border:{color:'#172840'}}
       },
       plugins:{
         legend:{display:false},
-        tooltip:{backgroundColor:'#18181f',borderColor:'#2a2a38',borderWidth:1,titleColor:'#ededf0',bodyColor:'#8b8ba0',padding:10,
+        tooltip:{backgroundColor:'#0f2035',borderColor:'#1f3655',borderWidth:1,titleColor:'#ccd6e0',bodyColor:'#637a90',padding:12,
           titleFont:{family:'Inter,system-ui,sans-serif',size:12,weight:'600'},
           bodyFont:{family:'JetBrains Mono,monospace',size:11},
           callbacks:{
-            title(items){const i=items[0];if(i.dataset.label.includes('Deal')){const d=euroDeals.find(x=>x.id===i.raw.id);return d?d.club:i.dataset.label;}return i.dataset.label;},
-            label(i){if(i.dataset.label.includes('Deal')){const d=euroDeals.find(x=>x.id===i.raw.id);if(d)return[d.amount+' | '+d.year,'Investor: '+d.investor,'Stake: '+d.stake];}return '$'+i.raw.y.toFixed(2)+'B avg';}
+            title(items){const i=items[0];if(i.dataset.label.includes('Deal')){const d=euroDeals.find(x=>x.id===i.raw.id);return d?d.club+' ('+d.year+')':i.dataset.label;}return i.dataset.label;},
+            label(i){if(i.dataset.label.includes('Deal')){const d=euroDeals.find(x=>x.id===i.raw.id);if(d)return[d.amount+' | '+d.stake,'Investor: '+d.investor];}return '$'+i.raw.y.toFixed(2)+'B avg';}
           }
         }
       },
@@ -820,6 +979,7 @@ function setEuroLeague(f, btn){
   document.querySelectorAll('#euro-league-filter .pill').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   renderEuroClubTable();
+  if(euroChart){ euroChart.data.datasets=buildEuroDatasets(); euroChart.update(); }
 }
 
 function renderEuroClubTable(){
@@ -842,9 +1002,6 @@ function renderEuroClubTable(){
       </tr>`).join('');
 }
 
-// kept for any legacy SVG onclick references
-function renderEuroTable(tab){ renderEuroClubTable(); }
-function setEuroTab(){}
 
 
 // ── FRANCHISE TABLE ──────────────────────────────────────────────────────────
@@ -952,6 +1109,155 @@ function openTokenModal(d){
   `);
 }
 
+// ── ALT SPORTS ───────────────────────────────────────────────────────────────
+const altCatBadge = {f1:'b-nfl', golf:'b-green', rugby:'b-majority', women:'b-purple', college:'b-amber', emerging:'b-pe'};
+function renderAltTable(){
+  const data = altFilter==='all' ? altDeals : altDeals.filter(d=>d.category===altFilter);
+  document.getElementById('alt-body').innerHTML = data.map(d=>`
+    <tr onclick="openAltModal(altDeals.find(x=>x.id==='${d.id}'))">
+      <td class="col-dim">${d.year}</td>
+      <td><div class="col-name">${d.entity}</div></td>
+      <td><span class="badge ${d.typeBadge}">${d.sport}</span></td>
+      <td class="col-dim">${d.investor}</td>
+      <td><span class="badge b-proposed">${d.type}</span></td>
+      <td style="text-align:right" class="col-num">${d.value}</td>
+      <td style="text-align:right" class="col-dim">${d.stake}</td>
+    </tr>`).join('');
+}
+function setAltFilter(f,btn){
+  altFilter=f;
+  document.querySelectorAll('#alt-filter .pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderAltTable();
+}
+function openAltModal(d){
+  if(!d) return;
+  openModal(`
+    <div class="modal-entity">${d.entity}</div>
+    <div class="modal-badges"><span class="badge ${d.typeBadge}">${d.sport}</span><span class="badge b-proposed">${d.year}</span></div>
+    <div class="modal-amount" style="font-size:22px">${d.value}</div>
+    <div style="margin-bottom:18px">
+      <span style="font-size:12px;color:var(--text2)">Stake: ${d.stake} &nbsp;|&nbsp; ${d.type}</span>
+    </div>
+    <div class="modal-grid">
+      <div class="modal-field"><div class="modal-fk">Investor</div><div class="modal-fv" style="font-family:var(--font);font-size:11px">${d.investor}</div></div>
+      <div class="modal-field"><div class="modal-fk">Category</div><div class="modal-fv" style="font-family:var(--font)">${d.sport}</div></div>
+    </div>
+    <div class="modal-notes">${d.notes}</div>
+    ${sourceLink(d.source)}
+  `);
+}
+
+// ── RWA INTEL ────────────────────────────────────────────────────────────────
+function setRwaTab(tab,btn){
+  rwaTab=tab;
+  document.querySelectorAll('#rwa-tabs .sub-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('rwa-sec-overview').style.display=tab==='overview'?'flex':'none';
+  document.getElementById('rwa-sec-chart').style.display=tab==='chart'?'flex':'none';
+  document.getElementById('rwa-sec-activity').style.display=tab==='activity'?'flex':'none';
+  if(tab==='chart') setTimeout(()=>{ if(!rwaChart) initRwaChart(); else rwaChart.resize(); },50);
+}
+function setRwaFilter(f,btn){
+  rwaFilter=f;
+  document.querySelectorAll('#rwa-filter .pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  renderRwaTable();
+}
+function renderRwaTable(){
+  const data=rwaFilter==='all'?rwaCompetitors:rwaCompetitors.filter(d=>d.type===rwaFilter);
+  document.getElementById('rwa-body').innerHTML=data.map(d=>{
+    const chgClass=d.changePos?'col-green':'col-red';
+    return`<tr onclick="openRwaModal(rwaCompetitors.find(x=>x.id==='${d.id}'))">
+      <td><div class="col-name" style="font-family:var(--mono);letter-spacing:-.3px">${d.ticker}</div><div class="col-sub">${d.name}</div></td>
+      <td><span class="badge ${d.typeBadge}">${d.typeLabel}</span></td>
+      <td style="text-align:right" class="col-num">${d.price}</td>
+      <td style="text-align:right" class="col-num">${d.mktCapLabel}</td>
+      <td style="text-align:right" class="col-dim">${d.tvlLabel}</td>
+      <td style="text-align:right" class="${chgClass}">${d.change24h}</td>
+      <td class="col-dim hide-mobile" style="font-size:11px">${d.exchanges}</td>
+    </tr>`;
+  }).join('');
+}
+function renderRwaActivity(){
+  document.getElementById('rwa-activity-feed').innerHTML=rwaAnnouncements.map(a=>`
+    <div style="display:flex;gap:20px;padding:16px 0;border-bottom:1px solid var(--border)">
+      <div style="width:68px;flex-shrink:0;text-align:right;padding-top:3px">
+        <span style="font-size:10px;color:var(--text3);font-weight:600;white-space:nowrap">${a.date}</span>
+      </div>
+      <div style="flex:1">
+        <div style="margin-bottom:6px"><span class="badge ${a.badge}" style="font-size:9px">${a.entity}</span></div>
+        <div style="font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.4">${a.headline}</div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.65">${a.detail}</div>
+      </div>
+    </div>`).join('');
+}
+function initRwaChart(){
+  const canvas=document.getElementById('rwa-chart'); if(!canvas) return;
+  const chartData=rwaCompetitors.filter(d=>d.mktCap!==null).sort((a,b)=>b.mktCap-a.mktCap);
+  const colorMap={protocol:'rgba(61,130,200,.75)',credit:'rgba(184,131,42,.75)',yield:'rgba(42,184,184,.75)',l1:'rgba(104,112,184,.75)'};
+  const borderMap={protocol:'#3d82c8',credit:'#b8832a',yield:'#2ab8b8',l1:'#6870b8'};
+  rwaChart=new Chart(canvas.getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:chartData.map(d=>d.ticker),
+      datasets:[{
+        label:'Market Cap',
+        data:chartData.map(d=>d.mktCap),
+        backgroundColor:chartData.map(d=>colorMap[d.type]||'rgba(99,122,144,.5)'),
+        borderColor:chartData.map(d=>borderMap[d.type]||'#637a90'),
+        borderWidth:1.5,
+        borderRadius:4,
+        barThickness:22
+      }]
+    },
+    options:{
+      indexAxis:'y',
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:{duration:200},
+      scales:{
+        x:{min:0,ticks:{callback:v=>'$'+v+'B',color:'#344d62',font:{family:'JetBrains Mono,monospace',size:10}},grid:{color:'#172840'},border:{color:'#172840'}},
+        y:{ticks:{color:'#ccd6e0',font:{family:'Inter,system-ui,sans-serif',size:11}},grid:{color:'rgba(23,40,64,.5)'},border:{color:'#172840'}}
+      },
+      plugins:{
+        legend:{display:false},
+        tooltip:{
+          backgroundColor:'#0f2035',borderColor:'#1f3655',borderWidth:1,
+          titleColor:'#ccd6e0',bodyColor:'#637a90',padding:12,
+          titleFont:{family:'Inter,system-ui,sans-serif',size:12,weight:'600'},
+          bodyFont:{family:'JetBrains Mono,monospace',size:11},
+          callbacks:{
+            title(items){const i=items[0];const d=chartData.find(x=>x.ticker===i.label);return d?d.name:i.label;},
+            label(i){return '$'+i.raw.toFixed(3).replace(/\.?0+$/,'')+'B Mkt Cap';}
+          }
+        }
+      },
+      onClick(evt,els){if(!els.length)return;const d=chartData[els[0].index];if(d)openRwaModal(d);},
+      onHover(evt,els){evt.native.target.style.cursor=els.length?'pointer':'default';}
+    }
+  });
+}
+function openRwaModal(d){
+  if(!d) return;
+  const chgColor=d.changePos?'var(--green)':'var(--red)';
+  const statusBadge=d.statusBadge&&d.status!=='Active'?`<span class="badge ${d.statusBadge}">${d.status}</span>`:'';
+  openModal(`
+    <div class="modal-entity">${d.name} <span style="font-family:var(--mono);font-size:14px;color:var(--text2);font-weight:400">${d.ticker}</span></div>
+    <div class="modal-badges"><span class="badge ${d.typeBadge}">${d.typeLabel}</span>${statusBadge}</div>
+    <div class="modal-amount" style="font-size:26px;font-family:var(--mono)">${d.price}</div>
+    <div style="font-size:12px;color:${chgColor};font-family:var(--mono);margin-top:-6px;margin-bottom:16px">${d.change24h} (24h)</div>
+    <div class="modal-grid">
+      <div class="modal-field"><div class="modal-fk">Market Cap</div><div class="modal-fv">${d.mktCapLabel}</div></div>
+      <div class="modal-field"><div class="modal-fk">TVL / Loans</div><div class="modal-fv">${d.tvlLabel}</div></div>
+      <div class="modal-field"><div class="modal-fk">Asset Focus</div><div class="modal-fv" style="font-family:var(--font);font-size:10px;white-space:normal">${d.asset}</div></div>
+      <div class="modal-field"><div class="modal-fk">Chain(s)</div><div class="modal-fv" style="font-family:var(--font);font-size:10px;white-space:normal">${d.chains}</div></div>
+    </div>
+    <div class="modal-field" style="margin-bottom:14px"><div class="modal-fk">Listed On</div><div class="modal-fv" style="font-family:var(--font);font-size:11px;white-space:normal;font-weight:500">${d.exchanges}</div></div>
+    <div class="modal-notes">${d.notes}</div>
+  `);
+}
+
 // ── MODALS ───────────────────────────────────────────────────────────────────
 function openModal(html){ document.getElementById('modal-inner').innerHTML=html; document.getElementById('modal').classList.add('open'); }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
@@ -1022,6 +1328,9 @@ window.addEventListener('DOMContentLoaded',()=>{
   renderEuroClubTable();
   renderMediaTable();
   renderTokenTable();
+  renderAltTable();
+  renderRwaTable();
+  renderRwaActivity();
 });
 </script>
 </body>
