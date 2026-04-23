@@ -322,8 +322,83 @@ tbody tr:last-child td{border-bottom:none}
             <div class="leg-item"><div class="leg-dot" style="background:var(--cyan);border-color:#67e8f9"></div>Serie A</div>
           </div>
         </div>
-        <div class="euro-chart-wrap"><canvas id="euro-chart"></canvas></div>
-        <div class="euro-footnote">Estimates based on Sportico, Deloitte Football Money League, and Forbes annual valuations. 2020 reflects COVID-adjusted figures. Deal scatter shows implied club enterprise value at transaction date.</div>
+        <div class="euro-chart-wrap" style="overflow-x:auto">
+<svg viewBox="0 0 940 370" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:560px;display:block">
+  <!-- Grid lines -->
+  <line x1="52" y1="340" x2="932" y2="340" stroke="#1f1f28" stroke-width="1"/>
+  <line x1="52" y1="289" x2="932" y2="289" stroke="#1f1f28" stroke-width="0.6"/>
+  <line x1="52" y1="237" x2="932" y2="237" stroke="#1f1f28" stroke-width="0.6"/>
+  <line x1="52" y1="185" x2="932" y2="185" stroke="#1f1f28" stroke-width="0.6"/>
+  <line x1="52" y1="134" x2="932" y2="134" stroke="#1f1f28" stroke-width="0.6"/>
+  <line x1="52" y1="82"  x2="932" y2="82"  stroke="#1f1f28" stroke-width="0.6"/>
+  <line x1="52" y1="30"  x2="932" y2="30"  stroke="#1f1f28" stroke-width="0.6"/>
+  <!-- Y labels -->
+  <text x="46" y="343" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$0</text>
+  <text x="46" y="292" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$1B</text>
+  <text x="46" y="240" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$2B</text>
+  <text x="46" y="188" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$3B</text>
+  <text x="46" y="137" text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$4B</text>
+  <text x="46" y="85"  text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$5B</text>
+  <text x="46" y="33"  text-anchor="end" fill="#52525f" font-size="10" font-family="JetBrains Mono,monospace">$6B</text>
+  <!-- X labels: 2016-2025, step=(932-52)/9=97.8 -->
+  <text x="52"  y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2016</text>
+  <text x="150" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2017</text>
+  <text x="248" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2018</text>
+  <text x="346" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2019</text>
+  <text x="444" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2020</text>
+  <text x="542" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2021</text>
+  <text x="640" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2022</text>
+  <text x="738" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2023</text>
+  <text x="836" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2024</text>
+  <text x="932" y="357" text-anchor="middle" fill="#52525f" font-size="10" font-family="Inter,sans-serif">2025</text>
+  <!-- COVID / PE markers -->
+  <line x1="444" y1="30" x2="444" y2="340" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="3,4"/>
+  <text x="448" y="44" fill="rgba(255,255,255,0.18)" font-size="9" font-family="Inter,sans-serif">COVID</text>
+  <line x1="640" y1="30" x2="640" y2="340" stroke="rgba(248,113,113,0.18)" stroke-width="1" stroke-dasharray="3,4"/>
+  <text x="644" y="44" fill="rgba(248,113,113,0.45)" font-size="9" font-family="Inter,sans-serif">Chelsea $5.3B</text>
+  <!-- y(v)=340-51.54*v  (0→340, 6.5→7) -->
+  <!-- Area fills -->
+  <polygon points="52,304 150,296 248,289 346,278 444,296 542,286 640,263 738,247 836,230 932,207 932,340 52,340" fill="rgba(192,132,252,0.07)"/>
+  <polygon points="52,322 150,318 248,314 346,307 444,317 542,312 640,300 738,289 836,271 932,250 932,340 52,340" fill="rgba(248,113,113,0.05)"/>
+  <polygon points="52,329 150,326 248,322 346,317 444,325 542,318 640,310 738,301 836,291 932,276 932,340 52,340" fill="rgba(34,211,238,0.04)"/>
+  <!-- EPL avg solid purple: 0.70,0.85,1.00,1.20,0.85,1.05,1.50,1.80,2.15,2.60 -->
+  <polyline points="52,304 150,296 248,289 346,278 444,296 542,286 640,263 738,247 836,230 932,207" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- La Liga dashed red: 0.35,0.42,0.50,0.65,0.45,0.55,0.78,1.00,1.35,1.75 -->
+  <polyline points="52,322 150,318 248,314 346,307 444,317 542,312 640,300 738,289 836,271 932,250" fill="none" stroke="#f87171" stroke-width="2" stroke-dasharray="6,3" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- Serie A dotted cyan: 0.22,0.28,0.35,0.45,0.30,0.42,0.58,0.75,0.95,1.25 -->
+  <polyline points="52,329 150,326 248,322 346,317 444,325 542,318 640,310 738,301 836,291 932,276" fill="none" stroke="#22d3ee" stroke-width="2" stroke-dasharray="3,4" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- ── Deal dots ─────────────────────────────────────────── -->
+  <!-- EPL / Multi purple dots -->
+  <circle cx="52"  cy="319" r="5" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e1'))"><title>Wolves / Fosun (2016) – £45M</title></circle>
+  <circle cx="444" cy="325" r="4" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e5'))"><title>Burnley / ALK Capital (2020) – ~£200M</title></circle>
+  <circle cx="542" cy="314" r="5" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e6'))"><title>Newcastle / Saudi PIF (2021) – £305M</title></circle>
+  <circle cx="542" cy="134" r="7" fill="#c084fc" stroke="#d8b4fe" stroke-width="2"   style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e8'))"><title>Liverpool via FSG / RedBird (2021) – £533M (impl. $4B)</title></circle>
+  <circle cx="640" cy="66"  r="8" fill="#c084fc" stroke="#d8b4fe" stroke-width="2"   style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e9'))"><title>Chelsea / Clearlake+Boehly (2022) – $5.3B</title></circle>
+  <circle cx="640" cy="333" r="4" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e12'))"><title>Southampton / Sport Republic (2022) – ~£90M</title></circle>
+  <circle cx="738" cy="315" r="5" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e13'))"><title>Leeds United / 49ers (2023) – £173M</title></circle>
+  <circle cx="738" cy="41"  r="8" fill="#c084fc" stroke="#d8b4fe" stroke-width="2"   style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e15'))"><title>Man Utd / INEOS Ratcliffe (2023) – £1.26B (impl. $5.8B)</title></circle>
+  <circle cx="738" cy="108" r="7" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e17'))"><title>Liverpool / Dynasty Equity (2023) – ~$200M</title></circle>
+  <circle cx="836" cy="312" r="4" fill="#c084fc" stroke="#d8b4fe" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e20'))"><title>Everton / Friedkin Group (2024) – £400M+</title></circle>
+  <!-- La Liga / Ligue1 red dots -->
+  <circle cx="346" cy="334" r="4" fill="#f87171" stroke="#fca5a5" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e2'))"><title>Nice / INEOS (2019) – ~€100M</title></circle>
+  <circle cx="542" cy="339" r="3" fill="#f87171" stroke="#fca5a5" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e7'))"><title>Toulouse / RedBird (2021) – ~€25M</title></circle>
+  <circle cx="738" cy="283" r="6" fill="#f87171" stroke="#fca5a5" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e14'))"><title>Olympique Lyonnais / Eagle Football (2023) – ~€800M</title></circle>
+  <!-- Serie A cyan dots -->
+  <circle cx="444" cy="301" r="5" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e4'))"><title>AS Roma / Friedkin Group (2020) – €591M</title></circle>
+  <circle cx="640" cy="272" r="6" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e10'))"><title>AC Milan / RedBird (2022) – €1.2B</title></circle>
+  <circle cx="640" cy="320" r="4" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e11'))"><title>Atalanta / Bain Capital (2022) – €275M</title></circle>
+  <circle cx="738" cy="309" r="4" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e18'))"><title>Atalanta / Arctos Partners (2023) – ~$36M minority</title></circle>
+  <circle cx="836" cy="289" r="5" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e19'))"><title>Inter Milan / Oaktree (2024) – €395M debt→equity</title></circle>
+  <circle cx="932" cy="330" r="4" fill="#22d3ee" stroke="#67e8f9" stroke-width="1.5" style="cursor:pointer" onclick="openEuroModal(euroDeals.find(x=>x.id==='e21'))"><title>Hellas Verona / Presidio Investors (2025)</title></circle>
+  <!-- Deal labels for major outliers -->
+  <text x="633" y="60"  fill="rgba(192,132,252,0.6)" font-size="8.5" font-family="Inter,sans-serif" text-anchor="end">Chelsea</text>
+  <text x="745" y="35"  fill="rgba(192,132,252,0.6)" font-size="8.5" font-family="Inter,sans-serif">Man Utd</text>
+  <text x="549" y="128" fill="rgba(192,132,252,0.5)" font-size="8.5" font-family="Inter,sans-serif">Liverpool</text>
+  <text x="745" y="102" fill="rgba(192,132,252,0.5)" font-size="8.5" font-family="Inter,sans-serif">Liverpool</text>
+  <text x="745" y="277" fill="rgba(248,113,113,0.5)" font-size="8.5" font-family="Inter,sans-serif">Lyon</text>
+</svg>
+        </div>
+        <div class="euro-footnote">Estimates based on Sportico, Deloitte Football Money League, and Forbes annual valuations. 2020 reflects COVID-adjusted figures. Deal dots show implied club enterprise value at transaction date — click any dot to open deal detail.</div>
       </div>
       <!-- Club / League tables -->
       <div class="tbl-wrap" id="euro-tbl" style="display:none;padding-top:12px">
@@ -537,10 +612,11 @@ function setChartFilter(f,btn){
   mainChart.update();
 }
 
-// ── EURO CHART ───────────────────────────────────────────────────────────────
+// ── EURO CHART — hardcoded SVG, no init needed ────────────────────────────
 function initEuroChart(){
-  if(euroChart) return;
-  const ctx=document.getElementById('euro-chart').getContext('2d');
+  // Chart is now a static SVG — no initialization required
+  return;
+  const ctx=document.getElementById('euro-chart'); if(!ctx) return; // dead code
   // Deal scatter: EPL, LaLiga/Ligue1, Serie A dots
   const eplPts  =euroDeals.filter(d=>d.xp&&d.impliedVal&&(d.leagueBadge==='b-epl'||d.leagueBadge==='b-multi')).map(d=>({x:d.xp,y:d.impliedVal,id:d.id}));
   const laligaPts=euroDeals.filter(d=>d.xp&&d.impliedVal&&(d.leagueBadge==='b-laliga'||d.leagueBadge==='b-ligue1')).map(d=>({x:d.xp,y:d.impliedVal,id:d.id}));
@@ -589,7 +665,7 @@ function setEuroTab(tab,btn){
   if(tab==='index'){
     chartSec.style.display='flex';
     tbl.style.display='none';
-    setTimeout(()=>{ if(euroChart)euroChart.resize(); else initEuroChart(); },50);
+    // SVG chart — nothing to initialize
   } else {
     chartSec.style.display='none';
     tbl.style.display='block';
