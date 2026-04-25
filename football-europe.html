@@ -109,6 +109,7 @@ tbody tr:last-child td{border-bottom:none}
 .modal-backdrop.open{display:flex}
 .modal{background:var(--card);border:1px solid var(--border2);border-radius:3px;padding:28px;max-width:520px;width:90%;max-height:80vh;overflow-y:auto;position:relative}
 .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;line-height:1;padding:4px}
+.modal-amount-nd{font-size:13px;color:var(--text3);font-weight:400;letter-spacing:.5px;text-transform:uppercase;margin:4px 0 12px}
 .modal-close:hover{color:var(--text)}
 .modal-entity{font-size:20px;font-weight:700;color:var(--text);margin-bottom:6px;letter-spacing:-.3px}
 .modal-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
@@ -264,7 +265,7 @@ tbody tr:last-child td{border-bottom:none}
   <div class="data-timestamp" style="text-align:center;padding:2px 24px;font-size:10px;color:var(--text3);opacity:0.5;border-bottom:1px solid var(--border);flex-shrink:0;letter-spacing:.3px">Data current to April 2026. Valuations sourced from Sportico, Forbes, Deloitte, and public filings. All figures approximate unless otherwise noted.</div>
   <div class="content"><div class="page active">
       <div class="sub-tabs" id="euro-tabs" style="flex-shrink:0">
-        <button class="sub-tab active" onclick="setEuroTab('index',this)">Price Index</button>
+        <button class="sub-tab active" onclick="setEuroTab('index',this)">Club Equity</button>
         <button class="sub-tab" onclick="setEuroTab('transactions',this)">Transactions</button>
       </div>
       <div id="euro-sec-index" style="flex:1;min-height:0;display:flex;flex-direction:column">
@@ -320,14 +321,21 @@ tbody tr:last-child td{border-bottom:none}
       </div><!-- end euro-sec-index -->
 
       <!-- Transactions sub-tab: Continental Euro 46 deals -->
-      <div id="euro-sec-transactions" style="display:none;flex:1;min-height:0;display:none;flex-direction:column">
-        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);flex-shrink:0">
-          <div class="stat-card"><div class="stat-label">Total Deals</div><div class="stat-val">46</div><div class="stat-chg neu">2014 – 2025</div></div>
-          <div class="stat-card"><div class="stat-label">Disclosed Value</div><div class="stat-val amber">€6.2B+</div><div class="stat-chg neu">Excl. undisclosed</div></div>
-          <div class="stat-card"><div class="stat-label">US-led Deals</div><div class="stat-val green">18</div><div class="stat-chg up">Largest single cohort</div></div>
-          <div class="stat-card"><div class="stat-label">Largest Deal</div><div class="stat-val">AC Milan €1.2B</div><div class="stat-chg neu">RedBird Capital 2022</div></div>
+      <div id="euro-sec-transactions" style="display:none;flex:1;min-height:0;flex-direction:column">
+        <div style="padding:10px 24px 0;flex-shrink:0;display:flex;align-items:baseline;justify-content:space-between">
+          <span class="chart-label">Continental Europe Transactions</span>
+          <a href="football-uk.html" style="font-size:11px;color:var(--text3);text-decoration:none">Premier League deals: Football: UK &rarr;</a>
         </div>
-        <div style="padding:8px 24px;flex-shrink:0;display:flex;gap:4px" id="ceur-filter-row-2">
+        <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);flex-shrink:0">
+          <div class="stat-card"><div class="stat-label">Total Deals</div><div class="stat-val" id="ceur2-total">50</div><div class="stat-chg neu" id="ceur2-total-sub">2014 – 2025</div></div>
+          <div class="stat-card"><div class="stat-label">Disclosed Value</div><div class="stat-val amber" id="ceur2-value">€6.2B+</div><div class="stat-chg neu">Excl. undisclosed</div></div>
+          <div class="stat-card"><div class="stat-label">US-led Deals</div><div class="stat-val green" id="ceur2-us">18</div><div class="stat-chg up" id="ceur2-us-sub">Largest single cohort</div></div>
+          <div class="stat-card"><div class="stat-label">Largest Deal</div><div class="stat-val" id="ceur2-largest">AC Milan €1.2B</div><div class="stat-chg neu" id="ceur2-largest-sub">RedBird Capital 2022</div></div>
+        </div>
+        <div style="padding:8px 24px 4px;flex-shrink:0;display:flex;align-items:center;gap:8px">
+          <input id="ceur2-search" type="text" placeholder="Search club, investor..." oninput="renderCeurTable2()" style="background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:12px;padding:5px 10px;width:220px;outline:none;flex-shrink:0">
+        </div>
+        <div style="padding:4px 24px 8px;flex-shrink:0;display:flex;flex-wrap:wrap;gap:4px" id="ceur-filter-row-2">
           <button class="pill active" onclick="setCeurFilter2('all',this)">All Leagues</button>
           <button class="pill" onclick="setCeurFilter2('ligue1',this)">Ligue 1</button>
           <button class="pill" onclick="setCeurFilter2('laliga',this)">La Liga</button>
@@ -917,8 +925,43 @@ function setCeurFilter2(f,el){
   el.classList.add('active');
   renderCeurTable2();
 }
+function updateCeurStats2(filteredDeals){
+  const totalEl=document.getElementById('ceur2-total');
+  const usEl=document.getElementById('ceur2-us');
+  const usSubEl=document.getElementById('ceur2-us-sub');
+  const valEl=document.getElementById('ceur2-value');
+  const largestEl=document.getElementById('ceur2-largest');
+  const largestSubEl=document.getElementById('ceur2-largest-sub');
+  if(!totalEl) return;
+  totalEl.textContent=filteredDeals.length;
+  const usDeal=filteredDeals.filter(d=>d.nationality&&d.nationality.toLowerCase().includes('american'));
+  usEl.textContent=usDeal.length;
+  usSubEl.textContent=usDeal.length>0?'Largest single cohort':'in filtered set';
+  const disclosed=filteredDeals.filter(d=>d.value&&d.value!=='N/D'&&d.value.match(/[€$£]\d/));
+  let totalEur=0;
+  disclosed.forEach(d=>{
+    const m=d.value.match(/[€$£]?~?(\d+\.?\d*)(B|M)?/i);
+    if(m){
+      const n=parseFloat(m[1]);
+      const u=(m[2]||'M').toUpperCase();
+      totalEur+=u==='B'?n:n/1000;
+    }
+  });
+  valEl.textContent=totalEur>0?'€'+(totalEur>1?totalEur.toFixed(1)+'B+':Math.round(totalEur*1000)+'M+'):'N/D';
+  let best=null,bestVal=-Infinity;
+  disclosed.forEach(d=>{
+    const v=parseValStr(d.value);
+    if(v>bestVal){bestVal=v;best=d;}
+  });
+  if(best){largestEl.textContent=best.club+' '+best.value;largestSubEl.textContent=best.acquirer+' '+best.year;}
+  else{largestEl.textContent='N/D';largestSubEl.textContent='Undisclosed in filter';}
+}
 function renderCeurTable2(){
-  const base=ceurFilter2==='all'?ceurDeals:ceurDeals.filter(d=>d.league===ceurFilter2);
+  const q=(document.getElementById('ceur2-search')||{}).value||'';
+  const ql=q.toLowerCase();
+  let base=ceurFilter2==='all'?ceurDeals:ceurDeals.filter(d=>d.league===ceurFilter2);
+  if(ql) base=base.filter(d=>(d.club+d.acquirer+d.nationality+d.leagueLabel).toLowerCase().includes(ql));
+  updateCeurStats2(base);
   const aug=base.map(d=>({...d,valueNum:parseValStr(d.value)}));
   aug.sort((a,b)=>cmp(a[ceurSort2.col],b[ceurSort2.col],ceurSort2.dir));
   applySort('ceur-thead-2',ceurSort2);
@@ -2109,7 +2152,7 @@ function openCeurModal(d){
   openModal(`
     <div class="modal-entity">${d.club}</div>
     <div class="modal-badges"><span class="badge ${d.leagueBadge}">${d.leagueLabel}</span><span class="badge ${d.typeBadge}">${d.type==='full'?'Full Acq.':d.type==='majority'?'Majority':'Minority'}</span></div>
-    <div class="modal-amount">${d.value}</div>
+    <div class="${d.value==='N/D'?'modal-amount-nd':'modal-amount'}">${d.value==='N/D'?'Undisclosed':d.value}</div>
     <div class="modal-grid">
       <div class="modal-field"><div class="modal-fk">Year</div><div class="modal-fv">${d.year}</div></div>
       <div class="modal-field"><div class="modal-fk">Acquirer</div><div class="modal-fv" style="font-family:var(--font);font-size:12px">${d.acquirer}</div></div>
@@ -2151,7 +2194,7 @@ function openEuroModal(d){
   openModal(`
     <div class="modal-entity">${d.club}</div>
     <div class="modal-badges"><span class="badge ${d.leagueBadge}">${d.league}</span><span class="badge ${d.typeBadge}">${d.type}</span></div>
-    <div class="modal-amount">${d.amount}</div>
+    <div class="${d.amount==='N/D'||d.amount==='Undisclosed'?'modal-amount-nd':'modal-amount'}">${d.amount==='N/D'||d.amount==='Undisclosed'?'Undisclosed':d.amount}</div>
     <div class="modal-grid">
       <div class="modal-field"><div class="modal-fk">Year</div><div class="modal-fv">${d.year}</div></div>
       <div class="modal-field"><div class="modal-fk">Investor</div><div class="modal-fv" style="font-family:var(--font);font-size:12px">${d.investor}</div></div>
@@ -2168,7 +2211,7 @@ function openMediaModal(d){
   openModal(`
     <div class="modal-entity">${d.entity}</div>
     <div class="modal-badges"><span class="badge ${d.typeBadge}">${d.type}</span><span class="badge ${d.statusBadge}">${d.status}</span></div>
-    <div class="modal-amount">${d.value}</div>
+    <div class="${d.value==='N/D'?'modal-amount-nd':'modal-amount'}">${d.value==='N/D'?'Undisclosed':d.value}</div>
     <div class="modal-grid">
       <div class="modal-field"><div class="modal-fk">Year</div><div class="modal-fv">${d.year}</div></div>
       <div class="modal-field"><div class="modal-fk">Investor</div><div class="modal-fv" style="font-family:var(--font);font-size:12px">${d.investor}</div></div>
