@@ -999,6 +999,26 @@ function sortCeur2(col){
   renderCeurTable2();
 }
 
+document.getElementById('main-nav').addEventListener('click', e=>{
+  if(!e.target.dataset.page) return;
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById('page-'+e.target.dataset.page).classList.add('active');
+  if(e.target.dataset.page==='market') setTimeout(()=>{ if(mainChart) mainChart.resize(); },50);
+  if(e.target.dataset.page==='euro'){
+    renderCeurTable2();
+    setTimeout(()=>{ if(euroChart) euroChart.resize(); },50);
+  }
+  if(e.target.dataset.page==='capital'){
+    renderAltTable(); renderMediaTable(); renderTokenTable();
+  }
+  if(e.target.dataset.page==='efl'){
+    renderEflTable();
+    setTimeout(()=>{ if(eflVolChart) eflVolChart.resize(); if(eflValChart) eflValChart.resize(); if(eflNatChart) eflNatChart.resize(); },50);
+  }
+});
+
 // ── CHART PLUGINS ────────────────────────────────────────────────────────────
 const pePlugin = {
   id:'peLine',
