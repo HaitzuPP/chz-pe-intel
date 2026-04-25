@@ -270,7 +270,7 @@ tbody tr:last-child td{border-bottom:none}
         <button class="sub-tab" onclick="setEuroTab('investors',this)">Investors</button>
       </div>
       <div id="euro-sec-index" style="flex:1;min-height:0;display:flex;flex-direction:column">
-      <div class="stats-grid" id="euro-stats-row" style="grid-template-columns:repeat(4,1fr);flex-shrink:0">
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr);flex-shrink:0">
         <div class="stat-card"><div class="stat-label">Total Tracked</div><div class="stat-val" id="euro-stat-total">49</div><div class="stat-chg neu">2008 – 2025</div></div>
         <div class="stat-card"><div class="stat-label">EPL Avg 2025</div><div class="stat-val amber">$3.0B</div><div class="stat-chg up">vs $0.8B in 2016</div></div>
         <div class="stat-card"><div class="stat-label">Largest Deal</div><div class="stat-val">Chelsea $5.3B</div><div class="stat-chg neu">Clearlake / Boehly 2022</div></div>
@@ -278,7 +278,7 @@ tbody tr:last-child td{border-bottom:none}
       </div>
       <!-- Price index chart — Chart.js canvas -->
       <div class="chart-controls" style="flex-shrink:0">
-        <span class="chart-label">EPL Avg Now 3x Continental Peers &nbsp;<span style="font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0">Club valuations by league, 2016–2025 ($B)</span></span>
+        <span class="chart-label">EPL avg now 3x continental peers <span style="font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0;font-size:11px">Club valuations 2016–2025 ($B)</span></span>
         <div class="chart-legend">
           <div class="leg-item"><div class="leg-line" style="background:var(--purple)"></div>EPL Avg</div>
           <div class="leg-item"><div class="leg-line" style="border-top:2px dashed var(--red)"></div>La Liga Avg</div>
@@ -291,14 +291,14 @@ tbody tr:last-child td{border-bottom:none}
         </div>
       </div>
       <div class="chart-wrap" style="height:340px;flex-shrink:0"><canvas id="euro-chart"></canvas></div>
-      <div class="euro-footnote" style="padding:4px 24px 6px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between"><span>Sportico / Deloitte / Forbes. 2020 COVID-adjusted.</span><span style="color:var(--amber);opacity:.7">&#9679; Click deal dots or table rows for sourced deal detail</span></div>
+      <div class="euro-footnote" style="padding:4px 24px 6px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between"><span>Sportico / Deloitte / Forbes. 2020 COVID-adjusted.</span><span style="color:var(--amber);opacity:.7;font-size:10px">&#9679; Click chart dots or rows for deal detail</span></div>
       <!-- Club equity table — always visible below chart -->
       <div style="border-top:1px solid var(--border);flex:1;min-height:0;display:flex;flex-direction:column">
         <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 24px 4px;flex-shrink:0">
           <span class="chart-label">Club Equity Transactions <span id="euro-count-badge" style="font-size:11px;font-weight:400;color:var(--text3);text-transform:none;letter-spacing:0;margin-left:4px">(49)</span></span>
-          <input id="euro-search" type="text" placeholder="Search club, investor..." oninput="renderEuroClubTable()" style="background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:12px;padding:5px 10px;width:200px;outline:none">
+          <input id="euro-search" type="text" placeholder="Search..." oninput="renderEuroClubTable()" style="background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:12px;padding:5px 10px;width:180px;outline:none">
         </div>
-        <div style="padding:0 24px 8px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between">
+        <div style="padding:0 24px 8px;flex-shrink:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
           <div class="pill-group" id="euro-league-filter">
             <button class="pill active" onclick="setEuroLeague('all',this)">All</button>
             <button class="pill" onclick="setEuroLeague('epl',this)">Premier League</button>
@@ -308,11 +308,11 @@ tbody tr:last-child td{border-bottom:none}
             <button class="pill" onclick="setEuroLeague('multi',this)">Multi-club</button>
             <button class="pill" onclick="setEuroLeague('eredivisie',this)">Eredivisie</button>
           </div>
-          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+          <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;margin-left:auto">
             <span style="font-size:11px;color:var(--text3)">From</span>
-            <select id="euro-year-from" onchange="renderEuroClubTable()" style="background:var(--panel);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:4px 6px;font-family:var(--font)"><option value="">All</option><option>2008</option><option>2010</option><option>2015</option><option>2019</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option></select>
+            <select id="euro-year-from" onchange="renderEuroClubTable()" style="background:var(--panel);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:4px 5px;font-family:var(--font)"><option value="">All</option><option>2008</option><option>2010</option><option>2015</option><option>2019</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option></select>
             <span style="font-size:11px;color:var(--text3)">To</span>
-            <select id="euro-year-to" onchange="renderEuroClubTable()" style="background:var(--panel);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:4px 6px;font-family:var(--font)"><option value="">All</option><option>2015</option><option>2019</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option><option>2025</option></select>
+            <select id="euro-year-to" onchange="renderEuroClubTable()" style="background:var(--panel);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:4px 5px;font-family:var(--font)"><option value="">All</option><option>2015</option><option>2019</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option><option>2025</option></select>
           </div>
         </div>
         <div class="tbl-wrap" style="padding-top:0;flex:1;min-height:0;overflow-y:auto">
@@ -344,14 +344,14 @@ tbody tr:last-child td{border-bottom:none}
           <div class="stat-card"><div class="stat-label">US-led Deals</div><div class="stat-val green" id="ceur2-us">18</div><div class="stat-chg up" id="ceur2-us-sub">Largest single cohort</div></div>
           <div class="stat-card"><div class="stat-label">Largest Deal</div><div class="stat-val" id="ceur2-largest">AC Milan €1.2B</div><div class="stat-chg neu" id="ceur2-largest-sub">RedBird Capital 2022</div></div>
         </div>
-        <div style="padding:4px 24px 0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between"><span style="font-size:11px;color:var(--text3)">Continental Europe only. <a href="football-uk.html" style="color:var(--text3)">Premier League deals on Football: UK &rarr;</a></span></div>
+        <div style="padding:4px 24px 0;flex-shrink:0"><span style="font-size:11px;color:var(--text3)">Continental Europe (ex-EPL). <a href="football-uk.html" style="color:var(--text3)">Premier League: Football: UK &rarr;</a></span></div>
         <div style="padding:8px 24px 4px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:8px">
-          <input id="ceur2-search" type="text" placeholder="Search club, investor..." oninput="renderCeurTable2()" style="background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:12px;padding:5px 10px;width:200px;outline:none;flex-shrink:0">
-          <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+          <input id="ceur2-search" type="text" placeholder="Search club, investor..." oninput="renderCeurTable2()" style="background:var(--panel);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:12px;padding:5px 10px;width:190px;outline:none;flex-shrink:0">
+          <div style="display:flex;align-items:center;gap:5px;flex-shrink:0">
             <span style="font-size:11px;color:var(--text3)">From</span>
-            <select id="ceur2-year-from" onchange="renderCeurTable2()" style="background:var(--panel);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:4px 6px;font-family:var(--font)"><option value="">All</option><option>2014</option><option>2016</option><option>2019</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option></select>
+            <select id="ceur2-year-from" onchange="renderCeurTable2()" style="background:var(--panel);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:4px 5px;font-family:var(--font)"><option value="">All</option><option>2014</option><option>2016</option><option>2019</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option></select>
             <span style="font-size:11px;color:var(--text3)">To</span>
-            <select id="ceur2-year-to" onchange="renderCeurTable2()" style="background:var(--panel);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:4px 6px;font-family:var(--font)"><option value="">All</option><option>2016</option><option>2019</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option><option>2025</option></select>
+            <select id="ceur2-year-to" onchange="renderCeurTable2()" style="background:var(--panel);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:4px 5px;font-family:var(--font)"><option value="">All</option><option>2016</option><option>2019</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option><option>2025</option></select>
           </div>
         </div>
         <div style="padding:4px 24px 8px;flex-shrink:0;display:flex;flex-wrap:wrap;gap:4px" id="ceur-filter-row-2">
@@ -519,7 +519,7 @@ const altDeals = [
   {id:'a8',year:2021,sport:'Rugby',category:'rugby',entity:'United Rugby Championship',investor:'CVC Capital Partners',type:'Minority Commercial',typeBadge:'b-pe',value:'Undisclosed',stake:'~28%',source:'https://www.bbc.co.uk/sport/rugby-union/57083736',notes:'CVC acquires approximately 28% of the United Rugby Championship (URC), which covers clubs across Ireland, Wales, Scotland, South Africa, and Italy. Part of CVC\'s growing rugby portfolio alongside Premiership Rugby and Six Nations. URC is now part of CVC\'s Global Sport Group alongside seven other sports properties. The common thesis across all CVC rugby investments: broadcast revenues are materially underpriced relative to live event quality and growing international (US, Japan) fanbase.'},
   {id:'a9',year:2022,sport:'Rugby',category:'rugby',entity:'Six Nations Rugby',investor:'CVC Capital Partners',type:'Minority Commercial',typeBadge:'b-pe',value:'£365M',stake:'14.3%',source:'https://www.theguardian.com/sport/2022/mar/24/six-nations-cvc-deal-rugby-union',notes:'CVC acquires 14.3% of Six Nations\' commercial rights vehicle for £365M, completing its European rugby triumvirate (Premiership, URC, Six Nations). CVC\'s total European rugby investment now implies a multi-billion-pound commercial rights position across the continent\'s most watched club and international competitions. All three properties are consolidated into Global Sport Group as of September 2025.'},
   {id:'a10',year:2021,sport:'Cricket',category:'rugby',entity:'Gujarat Titans (IPL)',investor:'CVC Capital Partners',type:'Franchise Acquisition',typeBadge:'b-full',value:'$745M at acq., sold $575M',stake:'67%',source:'https://www.espncricinfo.com/story/cvc-capital-partners-acquires-ipl-franchise-ahmedabad-for-5-625-crore-rupees-1290555',notes:'CVC acquires 67% of the newly franchised IPL Ahmedabad team (later Gujarat Titans) for approximately $745M (Rs 5,625 crore). The Titans won the IPL in their debut 2022 season and again in 2023. CVC sold the position in February 2025 for approximately $575M, realizing a loss on the original acquisition price but exiting ahead of the broader IPL rights cycle. The IPL remains the highest-growth sports media property in Asia by subscriber monetization.'},
-  // Women's sports
+  // Women\'s sports
   {id:'a11',year:2024,sport:'WNBA',category:'women',entity:'Toronto Tempo',investor:'Kilmer Sports Ventures',type:'Expansion Franchise',typeBadge:'b-full',value:'$115M',stake:'100%',source:'https://www.nytimes.com/2024/02/07/sports/basketball/wnba-expansion-toronto.html',notes:'Kilmer Sports Ventures acquires the Toronto WNBA expansion franchise for $115M. Serena Williams joined the ownership group in 2025. The Toronto franchise will play its first season in the WNBA\'s international expansion push. Franchise fees have moved from $25M (Seattle Storm, 2008) to $115M in 16 years, a 4.6x step-up driven by the $2.2B broadcast deal and accelerating elite player profiles.'},
   {id:'a12',year:2024,sport:'WNBA',category:'women',entity:'New York Liberty',investor:'Undisclosed Minority Buyers',type:'Minority Stake Sale',typeBadge:'b-partial',value:'$450M implied',stake:'Minority',source:'https://frontofficesports.com/wnba-valuations-new-york-liberty/',notes:'The New York Liberty completes a minority stake sale at an implied $450M franchise valuation. The Liberty won the 2024 WNBA championship with Breanna Stewart. The $450M implied valuation is a direct function of the WNBA\'s $2.2B, 11-year broadcast deal (Disney, Amazon, NBCUniversal). Pre-broadcast-deal, WNBA franchise values were estimated at $20-40M. The step-change confirms that women\'s sports franchise valuations are now driven by the same media rights inflation mechanics as male sports.'},
   {id:'a13',year:2024,sport:'NWSL',category:'women',entity:'Bay FC',investor:'Sixth Street',type:'Majority Founding',typeBadge:'b-majority',value:'$125M franchise fee',stake:'Majority',source:'https://frontofficesports.com/sixth-street-bay-fc-nwsl/',notes:'Sixth Street is the majority founding investor in Bay FC (National Women\'s Soccer League), paying the $125M NWSL expansion fee. Sixth Street structured the investment as the Bay Collective multi-club platform for women\'s soccer. Bay FC is the first NWSL club with a primary backer that is a major global PE firm. The NWSL permits PE majority or 100% ownership — structurally more accessible than any major male sports league — making women\'s soccer the most PE-friendly professional sport in North America.'},
@@ -946,8 +946,8 @@ function setEuroTab(tab, el){
   document.getElementById('euro-sec-index').style.display = (!isTx&&!isInv) ? 'flex' : 'none';
   document.getElementById('euro-sec-transactions').style.display = isTx ? 'flex' : 'none';
   if(isTx) document.getElementById('euro-sec-transactions').style.flexDirection = 'column';
-  const invEl=document.getElementById('euro-sec-investors');
-  if(invEl){ invEl.style.display=isInv?'flex':'none'; if(isInv){ invEl.style.flexDirection='column'; renderInvestorTable(); } }
+  const invEl = document.getElementById('euro-sec-investors');
+  if(invEl){ invEl.style.display = isInv ? 'flex' : 'none'; if(isInv){ invEl.style.flexDirection='column'; renderInvestorTable(); } }
   if(!isTx&&!isInv) setTimeout(()=>{ if(!euroChart) initEuroChart(); else euroChart.resize(); }, 50);
 }
 
@@ -1006,7 +1006,7 @@ function renderCeurTable2(){
   const yTo=parseInt((document.getElementById('ceur2-year-to')||{}).value)||9999;
   let base=ceurFilter2==='all'?ceurDeals:ceurDeals.filter(d=>d.league===ceurFilter2);
   if(ql) base=base.filter(d=>(d.club+d.acquirer+d.nationality+d.leagueLabel).toLowerCase().includes(ql));
-  base=base.filter(d=>d.year>=yFrom&&d.year<=yTo);
+  base=base.filter(d=>!yFrom||d.year>=yFrom).filter(d=>!yTo||d.year<=yTo);
   updateCeurStats2(base);
   const aug=base.map(d=>({...d,valueNum:parseValStr(d.value)}));
   aug.sort((a,b)=>cmp(a[ceurSort2.col],b[ceurSort2.col],ceurSort2.dir));
@@ -1925,23 +1925,17 @@ function setEuroLeague(f,btn){
   if(euroChart){euroChart.data.datasets=buildEuroDatasets();euroChart.update();}
 }
 function renderEuroClubTable(){
-  const q=(document.getElementById('euro-search')||{}).value||'';
-  const ql=q.toLowerCase();
+  const qs=(document.getElementById('euro-search')||{}).value||'';
+  const qsl=qs.toLowerCase();
   const yFrom=parseInt((document.getElementById('euro-year-from')||{}).value)||0;
   const yTo=parseInt((document.getElementById('euro-year-to')||{}).value)||9999;
   const clubDeals=euroDeals.filter(d=>d.id.startsWith('e'));
   let filtered=euroLeague==='all'?clubDeals:clubDeals.filter(d=>d.leagueBadge===leagueMap[euroLeague]);
-  if(ql) filtered=filtered.filter(d=>(d.club+d.investor+d.league+d.country).toLowerCase().includes(ql));
-  filtered=filtered.filter(d=>d.year>=yFrom&&d.year<=yTo);
-  // Update count badge
-  const badge=document.getElementById('euro-count-badge');
-  if(badge) badge.textContent='('+filtered.length+')';
-  // Update stats
-  const totalEl=document.getElementById('euro-stat-total');
-  if(totalEl) totalEl.textContent=filtered.length;
-  const usEl=document.getElementById('euro-stat-us');
-  const usSubEl=document.getElementById('euro-stat-us-sub');
-  if(usEl){const usCt=filtered.filter(d=>d.investor&&(d.investor.toLowerCase().includes('redbird')||d.investor.toLowerCase().includes('silver lake')||d.investor.toLowerCase().includes('clearlake')||d.investor.toLowerCase().includes('arctos')||d.investor.toLowerCase().includes('6th street')||d.investor.toLowerCase().includes('sixth street')||d.investor.toLowerCase().includes('oaktree')||d.investor.toLowerCase().includes('elliott')||d.investor.toLowerCase().includes('dynasty')||d.investor.toLowerCase().includes('49ers')||d.investor.toLowerCase().includes('ineos')||d.investor.toLowerCase().includes('ratcliffe')||d.investor.toLowerCase().includes('friedkin')||d.investor.toLowerCase().includes('textor')||d.investor.toLowerCase().includes('commisso')||d.investor.toLowerCase().includes('pagliuca')||d.investor.toLowerCase().includes('bain')||d.investor.toLowerCase().includes('alk')||d.investor.toLowerCase().includes('sport republic')||d.investor.toLowerCase().includes('fenway')||d.investor.toLowerCase().includes('fsg')||d.investor.toLowerCase().includes('walton')||d.investor.toLowerCase().includes('harris')));usCt&&(usEl.textContent=usCt.length,usSubEl&&(usSubEl.textContent='of '+filtered.length+' deals'));}
+  if(qsl) filtered=filtered.filter(d=>(d.club+d.investor+d.country).toLowerCase().includes(qsl));
+  if(yFrom) filtered=filtered.filter(d=>d.year>=yFrom);
+  if(yTo<9999) filtered=filtered.filter(d=>d.year<=yTo);
+  const badge=document.getElementById('euro-count-badge'); if(badge) badge.textContent='('+filtered.length+')';
+  const totalEl=document.getElementById('euro-stat-total'); if(totalEl) totalEl.textContent=filtered.length;
   const aug=filtered.map(d=>({...d,amountNum:parseValStr(d.amount)}));
   aug.sort((a,b)=>cmp(a[euroSort.col],b[euroSort.col],euroSort.dir));
   applySort('euro-thead',euroSort);
@@ -2015,9 +2009,9 @@ const ceurDeals = [
 
   // ── EREDIVISIE (NETHERLANDS) ──────────────────────────────────────────────
   {id:'ce47',year:2024,club:'AFC Ajax',acquirer:'EXOR N.V.',nationality:'Italian/Dutch',league:'eredivisie',leagueLabel:'Eredivisie',leagueBadge:'b-eredivisie',stake:'17.4%',value:'€178M',type:'minority',typeBadge:'b-partial',source:'https://www.ajax.nl/nieuws/2024/03/exor-verwerft-17-4-procent-belang-in-afc-ajax/',notes:'EXOR NV (Agnelli-Elkann family holding company: Ferrari, Stellantis, The Economist) acquired 17.4% of publicly-listed AFC Ajax NV for €178M in March 2024 via an accelerated bookbuild on Euronext Amsterdam. Implied club valuation approximately €1.02B — a trough price following three consecutive seasons without Champions League revenue and the departure of Erik ten Hag and multiple academy graduates. EXOR brings institutional board governance from its Juventus tenure. The deal is the first major foreign institutional investment in Dutch football and validates Eredivisie clubs as credible alternative sports PE targets.'},
-  {id:'ce48',year:2022,club:'PSV Eindhoven',acquirer:'Dutch institutional / Jumbo Group',nationality:'Dutch',league:'eredivisie',leagueLabel:'Eredivisie',leagueBadge:'b-eredivisie',stake:'Minority',value:'~€80M',type:'minority',typeBadge:'b-partial',source:'https://www.vi.nl/nieuws/psv-haalt-tientallen-miljoenen-op-via-investeerders',notes:'PSV Eindhoven raised approximately €80M through a structured equity round from Dutch institutional investors and corporate partners in 2022. Jumbo Supermarkets, PSV's shirt sponsor and key commercial partner, participated as a strategic investor alongside pension-adjacent capital. The raise restructured PSV's balance sheet, replacing reliance on the founding Philips Group legacy support structure with diversified institutional ownership. PSV used the capital to fund squad depth that delivered the 2022-23 Eredivisie title and a profitable 2023-24 Champions League campaign generating an estimated €60M+ in European revenue.'},
-  {id:'ce49',year:2024,club:'Feyenoord Rotterdam',acquirer:'Feyenoord City consortium',nationality:'Dutch',league:'eredivisie',leagueLabel:'Eredivisie',leagueBadge:'b-eredivisie',stake:'Minority (project)',value:'N/D',type:'minority',typeBadge:'b-partial',source:'https://www.feyenoord.com/en/feyenoord/feyenoord-city',notes:'Feyenoord Rotterdam secured institutional project finance and equity participation for Feyenoord City, the €1B+ stadium-led urban regeneration development in Rotterdam-Zuid. Dutch pension funds and real estate development capital form the investor base. The project — centred on a new 62,500-seat De Nieuwe Kuip — applies infrastructure PE logic to football: long-duration assets with event hospitality, mixed-use property, and stadium naming rights as the revenue base. Completion is targeted for 2027. Feyenoord's Champions League participation in 2023-24 and 2024-25 provides the commercial evidence base for the stadium business case.'},
-  {id:'ce50',year:2023,club:'AZ Alkmaar',acquirer:'Internationalisation capital round',nationality:'Dutch/International',league:'eredivisie',leagueLabel:'Eredivisie',leagueBadge:'b-eredivisie',stake:'Minority',value:'N/D',type:'minority',typeBadge:'b-partial',source:'https://www.az.nl/nieuws/az-versterkt-internationale-positie-met-nieuwe-investeerders',notes:'AZ Alkmaar completed a minority capital raise from international investors in 2023, seeking to internationalise the club's ownership and funding base following sustained Eredivisie top-three finishes and regular Europa League participation. The capital supported the AFAS Stadion capacity expansion and youth academy infrastructure. AZ have maintained a reputation as one of the Netherlands' most data-driven clubs, applying analytics-led recruitment that generates consistent Champions League playoff revenue from modest salary budgets.'},
+  {id:'ce48',year:2022,club:'PSV Eindhoven',acquirer:'Dutch institutional / Jumbo Group',nationality:'Dutch',league:'eredivisie',leagueLabel:'Eredivisie',leagueBadge:'b-eredivisie',stake:'Minority',value:'~€80M',type:'minority',typeBadge:'b-partial',source:'https://www.vi.nl/nieuws/psv-haalt-tientallen-miljoenen-op-via-investeerders',notes:'PSV Eindhoven raised approximately €80M through a structured equity round from Dutch institutional investors and corporate partners in 2022. Jumbo Supermarkets, PSV\'s shirt sponsor and key commercial partner, participated as a strategic investor alongside pension-adjacent capital. The raise restructured PSV\'s balance sheet, replacing reliance on the founding Philips Group legacy support structure with diversified institutional ownership. PSV used the capital to fund squad depth that delivered the 2022-23 Eredivisie title and a profitable 2023-24 Champions League campaign generating an estimated €60M+ in European revenue.'},
+  {id:'ce49',year:2024,club:'Feyenoord Rotterdam',acquirer:'Feyenoord City consortium',nationality:'Dutch',league:'eredivisie',leagueLabel:'Eredivisie',leagueBadge:'b-eredivisie',stake:'Minority (project)',value:'N/D',type:'minority',typeBadge:'b-partial',source:'https://www.feyenoord.com/en/feyenoord/feyenoord-city',notes:'Feyenoord Rotterdam secured institutional project finance and equity participation for Feyenoord City, the €1B+ stadium-led urban regeneration development in Rotterdam-Zuid. Dutch pension funds and real estate development capital form the investor base. The project — centred on a new 62,500-seat De Nieuwe Kuip — applies infrastructure PE logic to football: long-duration assets with event hospitality, mixed-use property, and stadium naming rights as the revenue base. Completion is targeted for 2027. Feyenoord\'s Champions League participation in 2023-24 and 2024-25 provides the commercial evidence base for the stadium business case.'},
+  {id:'ce50',year:2023,club:'AZ Alkmaar',acquirer:'Internationalisation capital round',nationality:'Dutch/International',league:'eredivisie',leagueLabel:'Eredivisie',leagueBadge:'b-eredivisie',stake:'Minority',value:'N/D',type:'minority',typeBadge:'b-partial',source:'https://www.az.nl/nieuws/az-versterkt-internationale-positie-met-nieuwe-investeerders',notes:'AZ Alkmaar completed a minority capital raise from international investors in 2023, seeking to internationalise the club\'s ownership and funding base following sustained Eredivisie top-three finishes and regular Europa League participation. The capital supported the AFAS Stadion capacity expansion and youth academy infrastructure. AZ have maintained a reputation as one of the Netherlands\' most data-driven clubs, applying analytics-led recruitment that generates consistent Champions League playoff revenue from modest salary budgets.'},
 
 ];
 
@@ -2287,62 +2281,66 @@ function openMediaModal(d){
 
 
 
-
-// ── INVESTOR AGGREGATION ────────────────────────────────────────────────────
+// ── INVESTOR AGGREGATION ──────────────────────────────────────────────────
 let invSort={col:'deals',dir:-1};
 function buildInvestorData(){
   const q=(document.getElementById('inv-search')||{}).value||'';
   const ql=q.toLowerCase();
   const map={};
-  [...euroDeals.filter(d=>d.id.startsWith('e')),...ceurDeals].forEach(d=>{
-    const inv=(d.investor||d.acquirer||'Unknown').split('/')[0].trim();
-    if(!map[inv]) map[inv]={investor:inv,nationality:d.nationality||'—',deals:0,leagues:new Set(),lastYear:0,totalVal:0,clubs:[]};
+  const allDeals=[...euroDeals.filter(d=>d.id.startsWith('e')),...ceurDeals];
+  allDeals.forEach(function(d){
+    const inv=((d.investor||d.acquirer||'Unknown').split('/')[0]).trim();
+    if(!map[inv]) map[inv]={investor:inv,nationality:d.nationality||'—',deals:0,leagueSet:new Set(),lastYear:0,totalVal:0,clubs:[]};
     map[inv].deals++;
-    map[inv].leagues.add(d.leagueLabel||d.league||'—');
+    map[inv].leagueSet.add(d.leagueLabel||d.league||'—');
     if((d.year||0)>map[inv].lastYear) map[inv].lastYear=d.year||0;
-    const v=parseValStr(d.amount||d.value||'');
+    var v=parseValStr(d.amount||d.value||'');
     if(v>0) map[inv].totalVal+=v;
     map[inv].clubs.push(d.club||d.franchise||'');
   });
-  let rows=Object.values(map).map(r=>({...r,leagues:[...r.leagues].join(', ')}));
-  if(ql) rows=rows.filter(r=>(r.investor+r.nationality+r.leagues).toLowerCase().includes(ql));
-  rows.sort((a,b)=>cmp(a[invSort.col],b[invSort.col],invSort.dir));
+  var rows=Object.values(map).map(function(r){ return Object.assign({},r,{leagues:[...r.leagueSet].join(', ')}); });
+  if(ql) rows=rows.filter(function(r){ return (r.investor+r.nationality+r.leagues).toLowerCase().indexOf(ql)>-1; });
+  rows.sort(function(a,b){ return cmp(a[invSort.col],b[invSort.col],invSort.dir); });
   return rows;
 }
 function renderInvestorTable(){
-  const rows=buildInvestorData();
-  const badge=document.getElementById('inv-count-badge');
+  var rows=buildInvestorData();
+  var badge=document.getElementById('inv-count-badge');
   if(badge) badge.textContent='('+rows.length+' investors)';
-  const tb=document.getElementById('inv-body');
+  var tb=document.getElementById('inv-body');
   if(!tb) return;
-  tb.innerHTML=rows.map(r=>`
-    <tr style="cursor:pointer" onclick="openInvModal(${JSON.stringify(r).replace(/'/g,'&#39;')})">
-      <td><div class="col-name">${r.investor}</div></td>
-      <td class="hide-mobile col-dim" style="font-size:11px">${r.nationality||'—'}</td>
-      <td style="text-align:right;font-family:var(--mono);font-weight:600;color:var(--text)">${r.deals}</td>
-      <td class="hide-mobile" style="font-size:11px;color:var(--text2);max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.leagues}</td>
-      <td style="text-align:right;font-family:var(--mono);font-size:11px;color:var(--text2)">${r.lastYear||'—'}</td>
-      <td style="text-align:right;font-family:var(--mono);font-weight:600;color:${r.totalVal>0?'var(--amber)':'var(--text3)'}">${r.totalVal>0?'€'+r.totalVal.toFixed(1)+'B':'N/D'}</td>
-    </tr>`).join('');
+  tb.innerHTML=rows.map(function(r){
+    var valStr=r.totalVal>0?('€'+r.totalVal.toFixed(1)+'B'):'N/D';
+    var valColor=r.totalVal>0?'var(--amber)':'var(--text3)';
+    var clubList=(r.clubs||[]).filter(function(c,i,a){return a.indexOf(c)===i;}).slice(0,8).join(', ');
+    return '<tr style="cursor:pointer" onclick="openInvDetail(\''+encodeURIComponent(JSON.stringify({investor:r.investor,nationality:r.nationality,deals:r.deals,leagues:r.leagues,lastYear:r.lastYear,totalVal:r.totalVal,clubList:clubList}))+'\')">'+ 
+      '<td><div class="col-name">'+r.investor+'</div></td>'+
+      '<td class="hide-mobile col-dim" style="font-size:11px">'+(r.nationality||'—')+'</td>'+
+      '<td style="text-align:right;font-family:var(--mono);font-weight:600;color:var(--text)">'+r.deals+'</td>'+
+      '<td class="hide-mobile" style="font-size:11px;color:var(--text2);max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.leagues+'</td>'+
+      '<td style="text-align:right;font-family:var(--mono);font-size:11px;color:var(--text2)">'+(r.lastYear||'—')+'</td>'+
+      '<td style="text-align:right;font-family:var(--mono);font-weight:600;color:'+valColor+'">'+valStr+'</td>'+
+      '</tr>';
+  }).join('');
 }
 function sortInv(col){
   invSort.dir=invSort.col===col?-invSort.dir:-1;
   invSort.col=col;
   renderInvestorTable();
 }
-function openInvModal(r){
-  if(typeof r==='string') r=JSON.parse(r);
-  openModal(`
-    <div class="modal-entity">${r.investor}</div>
-    <div class="modal-badges"><span class="badge b-pe">${r.nationality||'—'}</span></div>
-    <div class="modal-grid">
-      <div class="modal-field"><div class="modal-fk">Total Deals</div><div class="modal-fv">${r.deals}</div></div>
-      <div class="modal-field"><div class="modal-fk">Last Deal</div><div class="modal-fv">${r.lastYear||'—'}</div></div>
-      <div class="modal-field"><div class="modal-fk">Total Value</div><div class="modal-fv">${r.totalVal>0?'€'+r.totalVal.toFixed(1)+'B':'Undisclosed'}</div></div>
-      <div class="modal-field"><div class="modal-fk">Leagues</div><div class="modal-fv" style="font-family:var(--font);font-size:11px">${r.leagues}</div></div>
-    </div>
-    <div class="modal-notes"><strong>Clubs tracked:</strong> ${(r.clubs||[]).filter((c,i,a)=>a.indexOf(c)===i).join(', ')}</div>
-  `);
+function openInvDetail(enc){
+  try{
+    var r=JSON.parse(decodeURIComponent(enc));
+    openModal('<div class="modal-entity">'+r.investor+'</div>'+
+      '<div class="modal-badges"><span class="badge b-pe">'+(r.nationality||'—')+'</span></div>'+
+      '<div class="modal-grid">'+
+        '<div class="modal-field"><div class="modal-fk">Total Deals</div><div class="modal-fv">'+r.deals+'</div></div>'+
+        '<div class="modal-field"><div class="modal-fk">Last Deal</div><div class="modal-fv">'+(r.lastYear||'—')+'</div></div>'+
+        '<div class="modal-field"><div class="modal-fk">Total Value</div><div class="modal-fv">'+(r.totalVal>0?('€'+r.totalVal.toFixed(1)+'B'):'Undisclosed')+'</div></div>'+
+        '<div class="modal-field"><div class="modal-fk">Leagues</div><div class="modal-fv" style="font-family:var(--font);font-size:11px">'+r.leagues+'</div></div>'+
+      '</div>'+
+      '<div class="modal-notes"><strong>Clubs tracked:</strong> '+r.clubList+'</div>');
+  }catch(e){}
 }
 
 window.addEventListener('DOMContentLoaded',()=>{
